@@ -80,7 +80,4 @@ legal/
 - `.gitignore` ya protege archivos sensibles.
 
 ## Créditos
-Desarrollado por [tu nombre].
-
----
-GitHub Copilot
+Desarrollado por PADIA.
