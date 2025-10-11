@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Asistente Legal de Voz - Recopilación de información legal mediante interacción de voz">
+  <meta name="keywords" content="asistente legal, voz a texto, texto a voz, Flask, OpenAI, reconocimiento de voz">
+  <meta name="author" content="Asistente Legal de Voz">
+
+  <!-- Open Graph / Social Media Meta Tags -->
+  <meta property="og:title" content="Asistente Legal de Voz">
+  <meta property="og:description"
+    content="Interactúa con un asistente legal mediante voz para recopilar información personal y legal.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Asistente Legal de Voz">
+
+  <title>Asistente Legal de Voz</title>
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/x-icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.8em' font-size='90'>🎤</text></svg>">
+  <link rel="apple-touch-icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.8em' font-size='90'>🎤</text></svg>">
+
+  <!-- Hojas de estilo -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+  <!-- Preload de recursos críticos -->
+  <!-- Se eliminó el preload para evitar problemas de integridad -->
+</head>
+
+<body>
+  <!-- Contenedor principal -->
+  <div class="container">
+    <header class="header">
+      <h1 class="main-title">🎙️ Asistente Legal de Voz</h1>
+      <p class="subtitle">Interactúa mediante voz para recopilar información legal</p>
+    </header>
+
+    <!-- Barra de estado -->
+    <div id="status" class="status">Estado: Desconectado</div>
+
+    <!-- Navegación -->
+    <nav style="margin-bottom: 18px; display: flex; gap: 16px;">
+      <a href="/conversaciones" class="nav-btn"
+        style="padding: 8px 18px; background: #1976d2; color: #fff; border-radius: 6px; text-decoration: none; font-weight: 500;">Ver
+        conversaciones</a>
+      <a href="/conversacion/ultimo" class="nav-btn"
+        style="padding: 8px 18px; background: #388e3c; color: #fff; border-radius: 6px; text-decoration: none; font-weight: 500;">Vista
+        de la última conversación</a>
+    </nav>
+
+    <!-- Grupo de controles principales -->
+    <div class="button-group">
+      <button id="startBtn" class="btn btn-primary" aria-label="Iniciar conversación">
+        <span class="btn-icon">▶️</span>
+        <span class="btn-text">Iniciar conversación ahora</span>
+      </button>
+
+      <button id="stopBtn" class="btn btn-danger" disabled aria-label="Detener conversación">
+        <span class="btn-icon">⏹️</span>
+        <span class="btn-text">Detener</span>
+      </button>
+
+      <button id="saveBtn" class="btn btn-secondary" disabled aria-label="Guardar conversación manualmente">
+        <span class="btn-icon">💾</span>
+        <span class="btn-text">Guardar manualmente</span>
+      </button>
+
+      <button id="realtimeBtn" class="btn btn-success" disabled aria-label="Conectar con OpenAI Realtime">
+        <span class="btn-icon">🌐</span>
+        <span class="btn-text">Conectar OpenAI Realtime</span>
+      </button>
+    </div>
+
+    <!-- Control de umbral de nivel de audio (para priorizar la voz más cercana) -->
+    <div class="level-control" style="margin-top:12px; display:flex; align-items:center; gap:10px;">
+      <label for="levelThreshold">Sensibilidad de micrófono:</label>
+      <input id="levelThreshold" type="range" min="0" max="0.2" step="0.005" value="0.005" style="flex:1;"
+        aria-label="Ajuste de sensibilidad de micrófono">
+      <output id="levelThresholdValue">0.005</output>
+    </div>
+
+    <!-- Meter de nivel RMS y calibración -->
+    <div class="level-ui" style="margin-top:10px; display:flex; align-items:center; gap:12px;">
+      <div style="flex:1">
+        <div style="background:#eee; border-radius:6px; height:12px; overflow:hidden;">
+          <div id="levelMeterFill" style="width:0%; height:100%; background:linear-gradient(90deg,#4caf50,#8bc34a);">
+          </div>
+        </div>
+        <div style="font-size:12px; color:#666; margin-top:4px;">Nivel actual: <span id="levelMeterValue">0.000</span>
+        </div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+        <button id="calibrateBtn" class="btn btn-secondary" aria-label="Calibrar sensibilidad">Calibrar</button>
+        <small style="color:#666;">Calibración automática (3s)</small>
+      </div>
+    </div>
+
+    <!-- Indicador de progreso -->
+    <div id="progressContainer" class="progress-container" style="display: none;">
+      <div class="progress-bar">
+        <div id="progressBar" class="progress-fill" style="width: 0%;"></div>
+      </div>
+      <div id="progressText" class="progress-text">0% completado</div>
+    </div>
+
+    <!-- Área de chat -->
+    <div id="chatArea" class="chat-area" aria-live="polite" aria-label="Historial de conversación">
+      <!-- Los mensajes se añadirán dinámicamente aquí -->
+    </div>
+
+    <!-- Instrucciones para el usuario -->
+    <div class="instructions">
+      <h3>📌 Instrucciones</h3>
+      <ol class="instructions-list">
+        <li>Haga clic en "Iniciar conversación ahora" para comenzar</li>
+        <li>Responda las preguntas del asistente hablando claramente</li>
+        <li>El asistente le pedirá: nombre, cédula, dirección y detalles del caso legal</li>
+        <li>Puede guardar la conversación manualmente en cualquier momento</li>
+        <li>Para una experiencia mejorada, puede conectar con OpenAI Realtime</li>
+      </ol>
+    </div>
+
+    <!-- Notas informativas -->
+    <div class="notes">
+      <p><strong>🔊 Micrófono:</strong> Permita el acceso al micrófono cuando el navegador lo solicite.</p>
+      <p><strong>🌐 Compatibilidad:</strong> Funciona mejor en Chrome o Edge con soporte completo de Web Speech API.</p>
+      <p><strong>🔒 Privacidad:</strong> Todas las conversaciones se almacenan localmente y pueden consultarse
+        posteriormente.</p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy; <span id="currentYear">2025</span> Asistente Legal de Voz. Todos los derechos reservados.</p>
+    <p>Version 1.0.0</p>
+  </footer>
+
+  <!-- Scripts -->
+  <!-- Socket.IO Client desde CDN sin atributo de integridad (para evitar errores de carga) -->
+  <!-- En producción, considera descargar el archivo localmente -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
+
+  <!-- Script principal de la aplicación -->
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+  <!-- Script de inicialización -->
+  <script>
+    // Actualizar año en el footer
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+    // Manejar errores no capturados
+    window.addEventListener('error', (event) => {
+      console.error('Error no capturado:', event.error);
+      if (window.voiceAssistant) {
+        window.voiceAssistant.showSystemMessage('Error en la aplicación. Por favor, recarga la página.');
+      }
+    });
+
+    // Manejar rechazos de promesas no manejados
+    window.addEventListener('unhandledrejection', (event) => {
+      console.warn('Promesa rechazada no manejada:', event.reason);
+      event.preventDefault();
+    });
+  </script>
+</body>
+
+</html>

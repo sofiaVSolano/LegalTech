@@ -1,0 +1,10 @@
+# Ignorar archivos sensibles y temporales
+.env
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+.env.*
+.DS_Store
+conversaciones/

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Ver Conversación - Asistente Legal</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 24px 16px;
+      box-sizing: border-box;
+    }
+
+    #conversationArea,
+    #resultArea {
+      width: 100%;
+      box-sizing: border-box;
+      word-break: break-word;
+    }
+
+    .analysis-friendly {
+      width: 100%;
+      box-sizing: border-box;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>Ver Conversación</h1>
+      <a href="/conversaciones">Volver a la lista</a>
+    </header>
+
+    <div id="conversationArea"></div>
+    <div style="margin-top:12px;">
+      <button id="entenderBtn" class="btn btn-primary">Entender (Redactar carta)</button>
+      <button id="downloadTxtBtn" class="btn btn-secondary" style="margin-left:8px; display:none;">Descargar
+        .txt</button>
+      <button id="downloadDocxBtn" class="btn btn-secondary" style="margin-left:8px; display:none;">Descargar
+        .docx</button>
+    </div>
+
+    <div id="resultArea" style="margin-top:20px;"></div>
+  </div>
+
+  <script>
+    const convId = '{{ conversation_id }}';
+    async function loadConversation() {
+      const res = await fetch(`/api/conversation/${convId}`);
+      if (!res.ok) return document.getElementById('conversationArea').innerText = 'No encontrada';
+      const data = await res.json();
+      const conv = data.conversation;
+      const area = document.getElementById('conversationArea');
+      area.innerHTML = '';
+      conv.responses.forEach(r => {
+        const p = document.createElement('div');
+        p.className = 'message ' + r.role;
+        p.innerHTML = `<strong>${r.role}</strong>: ${r.content}`;
+        area.appendChild(p);
+      });
+
+      // mostrar análisis si existe
+      const resultArea = document.getElementById('resultArea');
+      if (conv.analysis) {
+        // Renderizar análisis guardado en formato amigable
+        function renderSavedAnalysis(result) {
+          resultArea.innerHTML = '';
+          const wrap = document.createElement('div');
+          wrap.className = 'analysis-friendly';
+          wrap.style.background = '#f8f9fa';
+          wrap.style.border = '1px solid #d1d5db';
+          wrap.style.borderRadius = '12px';
+          wrap.style.padding = '24px';
+          wrap.style.boxShadow = '0 2px 8px rgba(0,0,0,0.07)';
+          wrap.style.marginBottom = '24px';
+
+          const hdr = document.createElement('h2');
+          hdr.innerHTML = '<span style="font-size:1.5em;vertical-align:middle;">📝</span> Análisis guardado';
+          hdr.style.marginBottom = '18px';
+          wrap.appendChild(hdr);
+
+          // Categoría y subdivisión
+          const catRow = document.createElement('div');
+          catRow.style.display = 'flex';
+          catRow.style.gap = '32px';
+          catRow.style.marginBottom = '12px';
+          catRow.innerHTML = `
+            <div><span style="font-size:1.2em;">📂</span> <strong>Categoría:</strong> <span style="color:#2563eb;">${result.category || 'N/D'}</span></div>
+            <div><span style="font-size:1.2em;">🔖</span> <strong>Subdivisión:</strong> <span style="color:#059669;">${result.subdivision || 'N/D'}</span></div>
+          `;
+          wrap.appendChild(catRow);
+
+          // Estimación de costo
+          const cost = document.createElement('div');
+          cost.style.marginBottom = '18px';
+          cost.innerHTML = `<span style="font-size:1.2em;">💰</span> <strong>Estimación de costo:</strong> <span style="color:#b91c1c;">${result.estimated_cost || 'N/D'}</span>`;
+          wrap.appendChild(cost);
+
+          // Recomendaciones
+          const rec = document.createElement('div');
+          rec.innerHTML = `<h3 style="margin-bottom:8px;"><span style="font-size:1.2em;">✅</span> Recomendaciones</h3>`;
+          const recPre = document.createElement('pre');
+          recPre.innerText = result.recommendations || '';
+          recPre.style.background = '#e0f2fe';
+          recPre.style.borderRadius = '8px';
+          recPre.style.padding = '12px';
+          recPre.style.fontSize = '1em';
+          rec.appendChild(recPre);
+          wrap.appendChild(rec);
+
+          // Carta formal
+          const letter = document.createElement('div');
+          letter.innerHTML = `<h3 style="margin-bottom:8px;"><span style="font-size:1.2em;">📄</span> Carta formal</h3>`;
+          const letterPre = document.createElement('pre');
+          letterPre.innerText = result.letter || '';
+          letterPre.style.background = '#fef9c3';
+          letterPre.style.borderRadius = '8px';
+          letterPre.style.padding = '12px';
+          letterPre.style.fontSize = '1em';
+          letter.appendChild(letterPre);
+          wrap.appendChild(letter);
+
+          resultArea.appendChild(wrap);
+        }
+        renderSavedAnalysis(conv.analysis);
+        if (conv.analysis_raw) {
+          const rawWrap = document.createElement('div');
+          rawWrap.className = 'analysis-friendly';
+          rawWrap.style.background = '#fff7ed';
+          rawWrap.style.border = '1px solid #fbbf24';
+          rawWrap.style.borderRadius = '12px';
+          rawWrap.style.padding = '20px';
+          rawWrap.style.boxShadow = '0 2px 8px rgba(251,191,36,0.07)';
+          rawWrap.style.marginBottom = '18px';
+          const rawHdr = document.createElement('h3');
+          rawHdr.innerHTML = '<span style="font-size:1.2em;">🧾</span> Texto crudo del análisis';
+          rawHdr.style.marginBottom = '10px';
+          rawWrap.appendChild(rawHdr);
+          const rawPre = document.createElement('pre');
+          rawPre.innerText = conv.analysis_raw;
+          rawPre.style.background = '#fffde7';
+          rawPre.style.borderRadius = '8px';
+          rawPre.style.padding = '12px';
+          rawPre.style.fontSize = '1em';
+          rawWrap.appendChild(rawPre);
+          resultArea.appendChild(rawWrap);
+        }
+        // mostrar botones de descarga
+        try { document.getElementById('downloadTxtBtn').style.display = 'inline-block'; } catch (e) { }
+        try { document.getElementById('downloadDocxBtn').style.display = 'inline-block'; } catch (e) { }
+      }
+    }
+
+    document.getElementById('entenderBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('entenderBtn');
+      btn.disabled = true;
+      btn.innerText = 'Procesando...';
+      const res = await fetch(`/api/conversation/${convId}/entender`, { method: 'POST' });
+      const data = await res.json();
+      const out = document.getElementById('resultArea');
+      out.innerHTML = '';
+      function renderFriendly(result) {
+        out.innerHTML = '';
+        const wrap = document.createElement('div');
+        wrap.className = 'analysis-friendly';
+        wrap.style.background = '#f8f9fa';
+        wrap.style.border = '1px solid #d1d5db';
+        wrap.style.borderRadius = '12px';
+        wrap.style.padding = '24px';
+        wrap.style.boxShadow = '0 2px 8px rgba(0,0,0,0.07)';
+        wrap.style.marginBottom = '24px';
+
+        const hdr = document.createElement('h2');
+        hdr.innerHTML = '<span style="font-size:1.5em;vertical-align:middle;">📝</span> Análisis generado';
+        hdr.style.marginBottom = '18px';
+        wrap.appendChild(hdr);
+
+        // Categoría y subdivisión
+        const catRow = document.createElement('div');
+        catRow.style.display = 'flex';
+        catRow.style.gap = '32px';
+        catRow.style.marginBottom = '12px';
+        catRow.innerHTML = `
+          <div><span style="font-size:1.2em;">📂</span> <strong>Categoría:</strong> <span style="color:#2563eb;">${result.category || 'N/D'}</span></div>
+          <div><span style="font-size:1.2em;">🔖</span> <strong>Subdivisión:</strong> <span style="color:#059669;">${result.subdivision || 'N/D'}</span></div>
+        `;
+        wrap.appendChild(catRow);
+
+        // Estimación de costo
+        const cost = document.createElement('div');
+        cost.style.marginBottom = '18px';
+        cost.innerHTML = `<span style="font-size:1.2em;">💰</span> <strong>Estimación de costo:</strong> <span style="color:#b91c1c;">${result.estimated_cost || 'N/D'}</span>`;
+        wrap.appendChild(cost);
+
+        // Recomendaciones
+        const rec = document.createElement('div');
+        rec.innerHTML = `<h3 style="margin-bottom:8px;"><span style="font-size:1.2em;">✅</span> Recomendaciones</h3>`;
+        const recPre = document.createElement('pre');
+        recPre.innerText = result.recommendations || '';
+        recPre.style.background = '#e0f2fe';
+        recPre.style.borderRadius = '8px';
+        recPre.style.padding = '12px';
+        recPre.style.fontSize = '1em';
+        rec.appendChild(recPre);
+        wrap.appendChild(rec);
+
+        // Carta formal
+        const letter = document.createElement('div');
+        letter.innerHTML = `<h3 style="margin-bottom:8px;"><span style="font-size:1.2em;">📄</span> Carta formal</h3>`;
+        const letterPre = document.createElement('pre');
+        letterPre.innerText = result.letter || '';
+        letterPre.style.background = '#fef9c3';
+        letterPre.style.borderRadius = '8px';
+        letterPre.style.padding = '12px';
+        letterPre.style.fontSize = '1em';
+        letter.appendChild(letterPre);
+        wrap.appendChild(letter);
+
+        out.appendChild(wrap);
+      }
+
+      if (data.error) {
+        out.innerText = 'Error: ' + (data.error || '');
+      } else if (data.result) {
+        // resultado ya en JSON con campos esperados
+        renderFriendly(data.result);
+        try { document.getElementById('downloadTxtBtn').style.display = 'inline-block'; } catch (e) { }
+        try { document.getElementById('downloadDocxBtn').style.display = 'inline-block'; } catch (e) { }
+      } else if (data.result_text) {
+        // intentar parsear JSON dentro del texto
+        try {
+          const m = data.result_text.match(/(\{[\s\S]*\})/);
+          if (m) {
+            const parsed = JSON.parse(m[1]);
+            renderFriendly(parsed);
+          } else {
+            // si no hay JSON, mostrar el texto crudo en cuadro grande
+            const pre = document.createElement('pre');
+            pre.innerText = data.result_text;
+            out.appendChild(pre);
+          }
+        } catch (e) {
+          const pre = document.createElement('pre');
+          pre.innerText = data.result_text;
+          out.appendChild(pre);
+        }
+      }
+      btn.disabled = false;
+      btn.innerText = 'Entender (Redactar carta)';
+    });
+
+    // Descargar .txt
+    document.getElementById('downloadTxtBtn').addEventListener('click', () => {
+      const url = `/api/conversation/${convId}/download.txt`;
+      window.location.href = url;
+    });
+
+    // Descargar .docx
+    document.getElementById('downloadDocxBtn').addEventListener('click', () => {
+      const url = `/api/conversation/${convId}/download.docx`;
+      window.location.href = url;
+    });
+
+    loadConversation();
+  </script>
+</body>
+
+</html>

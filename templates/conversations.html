@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Conversaciones - Asistente Legal</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>Conversaciones guardadas</h1>
+      <a href="/">Volver</a>
+    </header>
+
+    <div id="list"></div>
+  </div>
+
+  <script>
+    async function loadList() {
+      const res = await fetch('/api/conversations/list');
+      const data = await res.json();
+      const list = document.getElementById('list');
+      if (!data.conversations || data.conversations.length === 0) {
+        list.innerHTML = '<p>No hay conversaciones guardadas.</p>';
+        return;
+      }
+      const ul = document.createElement('ul');
+      data.conversations.forEach(c => {
+        const li = document.createElement('li');
+        li.innerHTML = `<strong>${c.name}</strong> <small>(${c.timestamp || ''})</small> ` +
+          `<button data-id="${c.id}" class="viewBtn">Ver</button>` +
+          `<button data-id="${c.id}" class="delBtn">Eliminar</button>`;
+        ul.appendChild(li);
+      });
+      list.innerHTML = '';
+      list.appendChild(ul);
+
+      document.querySelectorAll('.viewBtn').forEach(b => b.addEventListener('click', (e) => {
+        const id = e.target.getAttribute('data-id');
+        window.location.href = `/conversacion/${id}`;
+      }));
+
+      document.querySelectorAll('.delBtn').forEach(b => b.addEventListener('click', async (e) => {
+        const id = e.target.getAttribute('data-id');
+        if (!confirm('Eliminar conversación?')) return;
+        const res = await fetch(`/api/conversation/${id}/delete`, { method: 'POST' });
+        if (res.ok) loadList(); else alert('Error eliminando');
+      }));
+    }
+    loadList();
+  </script>
+</body>
+
+</html>
