@@ -41,17 +41,37 @@ Asistente legal conversacional con reconocimiento de voz, síntesis de voz y an�
    ```
 6. Accede a [http://localhost:5002](http://localhost:5002)
 
-## Uso con Docker
-1. Copia tu `.env` (no se sube a GitHub):
+## Despliegue recomendado: Docker
+
+1. Clona el repositorio:
+   ```sh
+   git clone https://github.com/cghidalgos/legalTech.git
+   cd legalTech
+   ```
+
+2. Configura las variables de entorno:
    ```sh
    cp .env.example .env
-   # Edita y pon tu clave
+   # Edita .env y agrega tu clave real de OpenAI
    ```
-2. Construye y ejecuta:
+
+3. Construye y ejecuta el contenedor:
    ```sh
    docker compose up --build
    ```
-3. Accede a [http://localhost:5005](http://localhost:5005)
+
+4. Accede a la app en [http://localhost:5005](http://localhost:5005)
+
+## Configuración para desarrollo colaborativo
+
+### Variables de entorno
+- **`.env.example`**: Plantilla con variables necesarias (se sube a GitHub)
+- **`.env`**: Archivo con valores reales (NO se sube a GitHub, protegido por `.gitignore`)
+
+### Para nuevos desarrolladores:
+1. Copia la plantilla: `cp .env.example .env`
+2. Obtén tu clave de OpenAI en [platform.openai.com](https://platform.openai.com)
+3. Edita `.env` y agrega tu clave personal
 
 ## Variables de entorno
 - `OPENAI_API_KEY`: Clave de API de OpenAI

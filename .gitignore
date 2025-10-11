@@ -1,10 +1,21 @@
-# Ignorar archivos sensibles y temporales
+# Ignorar archivos sensibles y de configuración personal
 .env
+.env.local
+.env.production
+.env.staging
+
+# Archivos de Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 venv/
-.env.*
+env/
+
+# Archivos del sistema
 .DS_Store
+.vscode/
+*.log
+
+# Archivos de datos locales
 conversaciones/
