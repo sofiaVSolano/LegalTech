@@ -16,13 +16,13 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Asistente Legal de Voz">
 
-  <title>Asistente Legal de Voz</title>
+  <title>Asistente Legal de Voz - Consultoría Jurídica Profesional</title>
 
-  <!-- Favicons -->
+  <!-- Updated favicon with scales of justice -->
   <link rel="icon" type="image/x-icon"
-    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.8em' font-size='90'>🎤</text></svg>">
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.8em' font-size='90'>⚖️</text></svg>">
   <link rel="apple-touch-icon"
-    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.8em' font-size='90'>🎤</text></svg>">
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.8em' font-size='90'>⚖️</text></svg>">
 
   <!-- Hojas de estilo -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
@@ -34,45 +34,45 @@
 <body>
   <!-- Contenedor principal -->
   <div class="container">
+    <!-- Enhanced header with legal branding -->
     <header class="header">
-      <h1 class="main-title">🎙️ Asistente Legal de Voz</h1>
-      <p class="subtitle">Interactúa mediante voz para recopilar información legal</p>
+      <h1 class="main-title">⚖️ Asistente Legal ⚖️</h1>
+      <p class="subtitle">Consultoría jurídica profesional mediante interacción de voz</p>
     </header>
 
     <!-- Barra de estado -->
     <div id="status" class="status">Estado: Desconectado</div>
 
-    <!-- Navegación -->
+    <!-- Enhanced navigation with legal icons -->
     <nav style="margin-bottom: 18px; display: flex; gap: 16px;">
       <a href="/conversaciones" class="nav-btn"
-        style="padding: 8px 18px; background: #1976d2; color: #fff; border-radius: 6px; text-decoration: none; font-weight: 500;">Ver
+        style="padding: 8px 18px; background: #1976d2; color: #fff; border-radius: 6px; text-decoration: none; font-weight: 500;">📋
+        Ver
         conversaciones</a>
       <a href="/conversacion/ultimo" class="nav-btn"
-        style="padding: 8px 18px; background: #388e3c; color: #fff; border-radius: 6px; text-decoration: none; font-weight: 500;">Vista
-        de la última conversación</a>
+        style="padding: 8px 18px; background: #388e3c; color: #fff; border-radius: 6px; text-decoration: none; font-weight: 500;">📄
+        Última
+        conversación</a>
     </nav>
 
     <!-- Grupo de controles principales -->
     <div class="button-group">
       <button id="startBtn" class="btn btn-primary" aria-label="Iniciar conversación">
-        <span class="btn-icon">▶️</span>
-        <span class="btn-text">Iniciar conversación ahora</span>
+        <span class="btn-text">Iniciar consulta</span>
       </button>
 
       <button id="stopBtn" class="btn btn-danger" disabled aria-label="Detener conversación">
-        <span class="btn-icon">⏹️</span>
         <span class="btn-text">Detener</span>
       </button>
 
       <button id="saveBtn" class="btn btn-secondary" disabled aria-label="Guardar conversación manualmente">
-        <span class="btn-icon">💾</span>
-        <span class="btn-text">Guardar manualmente</span>
+        <span class="btn-text">Guardar</span>
       </button>
 
       <button id="realtimeBtn" class="btn btn-success" disabled aria-label="Conectar con OpenAI Realtime">
-        <span class="btn-icon">🌐</span>
-        <span class="btn-text">Conectar OpenAI Realtime</span>
+        <span class="btn-text">Modo avanzado</span>
       </button>
+
     </div>
 
     <!-- Control de umbral de nivel de audio (para priorizar la voz más cercana) -->
@@ -86,7 +86,7 @@
     <!-- Meter de nivel RMS y calibración -->
     <div class="level-ui" style="margin-top:10px; display:flex; align-items:center; gap:12px;">
       <div style="flex:1">
-        <div style="background:#eee; border-radius:6px; height:12px; overflow:hidden;">
+        <div style="background:#eee; border-radius:6px; height:12px; overflow:hidden; border: 1px solid #D4AF37;">
           <div id="levelMeterFill" style="width:0%; height:100%; background:linear-gradient(90deg,#4caf50,#8bc34a);">
           </div>
         </div>
@@ -112,31 +112,44 @@
       <!-- Los mensajes se añadirán dinámicamente aquí -->
     </div>
 
-    <!-- Instrucciones para el usuario -->
+    <!-- Botón manual de grabación (no automático) -->
+    <div style="margin-top:12px; display:flex; gap:8px; align-items:center;">
+      <button id="recordBtn" class="btn btn-primary" aria-pressed="false" aria-label="Grabar respuesta"
+        title="Grabar respuesta (presiona para iniciar/detener)">
+        🎤 Grabar respuesta
+      </button>
+      <small id="recordStatus" style="color:#666;">Inactivo</small>
+    </div>
+
+    <!-- Enhanced instructions with legal context -->
     <div class="instructions">
-      <h3>📌 Instrucciones</h3>
+      <h3>Instrucciones de uso</h3>
       <ol class="instructions-list">
-        <li>Haga clic en "Iniciar conversación ahora" para comenzar</li>
-        <li>Responda las preguntas del asistente hablando claramente</li>
-        <li>El asistente le pedirá: nombre, cédula, dirección y detalles del caso legal</li>
-        <li>Puede guardar la conversación manualmente en cualquier momento</li>
-        <li>Para una experiencia mejorada, puede conectar con OpenAI Realtime</li>
+        <li>Haga clic en "Iniciar consulta" para comenzar su asesoría legal</li>
+        <li>Responda las preguntas del asistente con claridad y precisión</li>
+        <li>Proporcione: nombre completo, número de identificación, dirección y detalles del caso</li>
+        <li>Puede guardar la conversación en cualquier momento para revisión posterior</li>
+        <li>El modo avanzado ofrece una experiencia mejorada con OpenAI Realtime</li>
       </ol>
     </div>
 
-    <!-- Notas informativas -->
+    <!-- Enhanced notes with legal disclaimers -->
     <div class="notes">
-      <p><strong>🔊 Micrófono:</strong> Permita el acceso al micrófono cuando el navegador lo solicite.</p>
-      <p><strong>🌐 Compatibilidad:</strong> Funciona mejor en Chrome o Edge con soporte completo de Web Speech API.</p>
-      <p><strong>🔒 Privacidad:</strong> Todas las conversaciones se almacenan localmente y pueden consultarse
-        posteriormente.</p>
+      <p><strong>Micrófono:</strong> Permita el acceso al micrófono cuando el navegador lo solicite para una
+        experiencia óptima.</p>
+      <p><strong>Compatibilidad:</strong> Funciona mejor en Chrome o Edge con soporte completo de Web Speech API.</p>
+      <p><strong>Confidencialidad:</strong> Todas las conversaciones se almacenan de forma segura y confidencial en
+        el sistema local.</p>
+      <p><strong>Nota legal:</strong> Este asistente proporciona orientación general. Para asesoría legal específica,
+        consulte con un abogado certificado.</p>
     </div>
   </div>
 
-  <!-- Footer -->
+  <!-- Enhanced footer with legal branding -->
   <footer class="footer">
-    <p>&copy; <span id="currentYear">2025</span> Asistente Legal de Voz. Todos los derechos reservados.</p>
-    <p>Version 1.0.0</p>
+    <p><strong>⚖️ Asistente Legal Profesional</strong></p>
+    <p>&copy; <span id="currentYear">2025</span> Todos los derechos reservados.</p>
+    <p>Versión 1.0.0 | Consultoría Jurídica Digital</p>
   </footer>
 
   <!-- Scripts -->

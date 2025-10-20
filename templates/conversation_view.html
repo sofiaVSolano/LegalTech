@@ -7,8 +7,9 @@
   <title>Ver Conversación - Asistente Legal</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <style>
+    /* Updated styles to match golden legal theme */
     .container {
-      max-width: 700px;
+      max-width: 900px;
       margin: 0 auto;
       padding: 24px 16px;
       box-sizing: border-box;
@@ -25,34 +26,102 @@
       width: 100%;
       box-sizing: border-box;
       overflow-x: auto;
+      background: linear-gradient(135deg, #fffee0 0%, #cbb567 100%) !important;
+      border: 1px solid #cbb567 !important;
+      border-radius: 12px !important;
+      padding: 24px !important;
+      box-shadow: 0 4px 16px rgba(203, 181, 103, 0.12) !important;
+      margin-bottom: 24px !important;
+    }
+
+    .analysis-friendly h2,
+    .analysis-friendly h3 {
+      color: #D4AF37;
+      font-family: 'Cormorant Garamond', serif;
+    }
+
+    .analysis-friendly pre {
+      background: rgba(255, 255, 255, 0.85) !important;
+      border: 1px solid rgba(203, 181, 103, 0.3) !important;
+      color: #000000 !important;
+      border-radius: 8px !important;
+      padding: 16px !important;
+      font-size: 0.95em !important;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .message {
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 12px;
+      border-left: 4px solid #D4AF37;
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, rgba(10, 22, 40, 0.3) 100%);
+    }
+
+    .message strong {
+      color: #D4AF37;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+    }
+
+    .message.user {
+      border-left-color: #B8860B;
+    }
+
+    .message.assistant {
+      border-left-color: #D4AF37;
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <header>
-      <h1>Ver Conversación</h1>
-      <a href="/conversaciones">Volver a la lista</a>
-    </header>
+  <!-- Added elegant legal-themed header -->
+  <div class="legal-header">
+    <div class="container">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <span style="font-size: 2.5rem;">📋</span>
+          <h1 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: 2rem; color: #D4AF37;">Detalles de
+            Conversación</h1>
+        </div>
+        <a href="/conversaciones" class="btn btn-secondary" style="text-decoration: none;">← Volver a la Lista</a>
+      </div>
+    </div>
+  </div>
 
-    <div id="conversationArea"></div>
-    <div style="margin-top:12px;">
-      <button id="entenderBtn" class="btn btn-primary">Entender (Redactar carta)</button>
-      <button id="downloadTxtBtn" class="btn btn-secondary" style="margin-left:8px; display:none;">Descargar
-        .txt</button>
-      <button id="downloadDocxBtn" class="btn btn-secondary" style="margin-left:8px; display:none;">Descargar
-        .docx</button>
+  <div class="container" style="margin-top: 2rem;">
+    <!-- Wrapped conversation area in elegant card -->
+    <div class="card" style="padding: 2rem; margin-bottom: 1.5rem;">
+      <h2
+        style="color: #D4AF37; font-family: 'Cormorant Garamond', serif; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+        <span>💬</span> Transcripción de la Consulta
+      </h2>
+      <div id="conversationArea"></div>
     </div>
 
-    <div id="resultArea" style="margin-top:20px;"></div>
+    <!-- Styled action buttons with golden theme -->
+    <div style="margin-bottom: 1.5rem; display: flex; gap: 0.75rem; flex-wrap: wrap;">
+      <button id="entenderBtn" class="btn btn-primary">
+        <span style="margin-right: 0.5rem;">⚖️</span> Analizar y Redactar Carta Legal
+      </button>
+      <button id="downloadTxtBtn" class="btn btn-secondary" style="display:none;">
+        <span style="margin-right: 0.5rem;">📄</span> Descargar .txt
+      </button>
+      <button id="downloadDocxBtn" class="btn btn-secondary" style="display:none;">
+        <span style="margin-right: 0.5rem;">📝</span> Descargar .docx
+      </button>
+    </div>
+
+    <div id="resultArea"></div>
   </div>
 
   <script>
     const convId = '{{ conversation_id }}';
     async function loadConversation() {
       const res = await fetch(`/api/conversation/${convId}`);
-      if (!res.ok) return document.getElementById('conversationArea').innerText = 'No encontrada';
+      if (!res.ok) return document.getElementById('conversationArea').innerText = 'Conversación no encontrada';
       const data = await res.json();
       const conv = data.conversation;
       const area = document.getElementById('conversationArea');
@@ -60,7 +129,7 @@
       conv.responses.forEach(r => {
         const p = document.createElement('div');
         p.className = 'message ' + r.role;
-        p.innerHTML = `<strong>${r.role}</strong>: ${r.content}`;
+        p.innerHTML = `<strong>${r.role === 'user' ? 'Cliente' : 'Asistente Legal'}</strong>: ${r.content}`;
         area.appendChild(p);
       });
 
@@ -72,15 +141,9 @@
           resultArea.innerHTML = '';
           const wrap = document.createElement('div');
           wrap.className = 'analysis-friendly';
-          wrap.style.background = '#f8f9fa';
-          wrap.style.border = '1px solid #d1d5db';
-          wrap.style.borderRadius = '12px';
-          wrap.style.padding = '24px';
-          wrap.style.boxShadow = '0 2px 8px rgba(0,0,0,0.07)';
-          wrap.style.marginBottom = '24px';
 
           const hdr = document.createElement('h2');
-          hdr.innerHTML = '<span style="font-size:1.5em;vertical-align:middle;">📝</span> Análisis guardado';
+          hdr.innerHTML = '<span style="font-size:1.5em;vertical-align:middle;">⚖️</span> Análisis Legal Guardado';
           hdr.style.marginBottom = '18px';
           wrap.appendChild(hdr);
 
@@ -89,39 +152,32 @@
           catRow.style.display = 'flex';
           catRow.style.gap = '32px';
           catRow.style.marginBottom = '12px';
+          catRow.style.flexWrap = 'wrap';
           catRow.innerHTML = `
-            <div><span style="font-size:1.2em;">📂</span> <strong>Categoría:</strong> <span style="color:#2563eb;">${result.category || 'N/D'}</span></div>
-            <div><span style="font-size:1.2em;">🔖</span> <strong>Subdivisión:</strong> <span style="color:#059669;">${result.subdivision || 'N/D'}</span></div>
+            <div><strong style="color: #D4AF37;">Categoría:</strong> <span style="color:#000000;">${result.category || 'N/D'}</span></div>
+            <div><strong style="color: #D4AF37;">Subdivisión:</strong> <span style="color:#000000;">${result.subdivision || 'N/D'}</span></div>
           `;
           wrap.appendChild(catRow);
 
           // Estimación de costo
           const cost = document.createElement('div');
           cost.style.marginBottom = '18px';
-          cost.innerHTML = `<span style="font-size:1.2em;">💰</span> <strong>Estimación de costo:</strong> <span style="color:#b91c1c;">${result.estimated_cost || 'N/D'}</span>`;
+          cost.innerHTML = `<strong>Estimación de costo:</strong>${result.estimated_cost || 'N/D'}</span>`;
           wrap.appendChild(cost);
 
           // Recomendaciones
           const rec = document.createElement('div');
-          rec.innerHTML = `<h3 style="margin-bottom:8px;"><span style="font-size:1.2em;">✅</span> Recomendaciones</h3>`;
+          rec.innerHTML = `<h3> Recomendaciones</h3>`;
           const recPre = document.createElement('pre');
           recPre.innerText = result.recommendations || '';
-          recPre.style.background = '#e0f2fe';
-          recPre.style.borderRadius = '8px';
-          recPre.style.padding = '12px';
-          recPre.style.fontSize = '1em';
           rec.appendChild(recPre);
           wrap.appendChild(rec);
 
           // Carta formal
           const letter = document.createElement('div');
-          letter.innerHTML = `<h3 style="margin-bottom:8px;"><span style="font-size:1.2em;">📄</span> Carta formal</h3>`;
+          letter.innerHTML = `<h3> Carta Formal</h3>`;
           const letterPre = document.createElement('pre');
           letterPre.innerText = result.letter || '';
-          letterPre.style.background = '#fef9c3';
-          letterPre.style.borderRadius = '8px';
-          letterPre.style.padding = '12px';
-          letterPre.style.fontSize = '1em';
           letter.appendChild(letterPre);
           wrap.appendChild(letter);
 
@@ -131,22 +187,12 @@
         if (conv.analysis_raw) {
           const rawWrap = document.createElement('div');
           rawWrap.className = 'analysis-friendly';
-          rawWrap.style.background = '#fff7ed';
-          rawWrap.style.border = '1px solid #fbbf24';
-          rawWrap.style.borderRadius = '12px';
-          rawWrap.style.padding = '20px';
-          rawWrap.style.boxShadow = '0 2px 8px rgba(251,191,36,0.07)';
-          rawWrap.style.marginBottom = '18px';
           const rawHdr = document.createElement('h3');
-          rawHdr.innerHTML = '<span style="font-size:1.2em;">🧾</span> Texto crudo del análisis';
+          rawHdr.innerHTML = 'Texto Crudo del Análisis';
           rawHdr.style.marginBottom = '10px';
           rawWrap.appendChild(rawHdr);
           const rawPre = document.createElement('pre');
           rawPre.innerText = conv.analysis_raw;
-          rawPre.style.background = '#fffde7';
-          rawPre.style.borderRadius = '8px';
-          rawPre.style.padding = '12px';
-          rawPre.style.fontSize = '1em';
           rawWrap.appendChild(rawPre);
           resultArea.appendChild(rawWrap);
         }
@@ -159,7 +205,7 @@
     document.getElementById('entenderBtn').addEventListener('click', async () => {
       const btn = document.getElementById('entenderBtn');
       btn.disabled = true;
-      btn.innerText = 'Procesando...';
+      btn.innerHTML = 'Procesando análisis legal...';
       const res = await fetch(`/api/conversation/${convId}/entender`, { method: 'POST' });
       const data = await res.json();
       const out = document.getElementById('resultArea');
@@ -168,15 +214,9 @@
         out.innerHTML = '';
         const wrap = document.createElement('div');
         wrap.className = 'analysis-friendly';
-        wrap.style.background = '#f8f9fa';
-        wrap.style.border = '1px solid #d1d5db';
-        wrap.style.borderRadius = '12px';
-        wrap.style.padding = '24px';
-        wrap.style.boxShadow = '0 2px 8px rgba(0,0,0,0.07)';
-        wrap.style.marginBottom = '24px';
 
         const hdr = document.createElement('h2');
-        hdr.innerHTML = '<span style="font-size:1.5em;vertical-align:middle;">📝</span> Análisis generado';
+        hdr.innerHTML = 'Análisis Legal Generado';
         hdr.style.marginBottom = '18px';
         wrap.appendChild(hdr);
 
@@ -185,39 +225,32 @@
         catRow.style.display = 'flex';
         catRow.style.gap = '32px';
         catRow.style.marginBottom = '12px';
+        catRow.style.flexWrap = 'wrap';
         catRow.innerHTML = `
-          <div><span style="font-size:1.2em;">📂</span> <strong>Categoría:</strong> <span style="color:#2563eb;">${result.category || 'N/D'}</span></div>
-          <div><span style="font-size:1.2em;">🔖</span> <strong>Subdivisión:</strong> <span style="color:#059669;">${result.subdivision || 'N/D'}</span></div>
+          <div><strong style="color: #D4AF37;">Categoría:</strong> <span style="color:#FFFFF0;">${result.category || 'N/D'}</span></div>
+          <div><strong style="color: #D4AF37;">Subdivisión:</strong> <span style="color:#FFFFF0;">${result.subdivision || 'N/D'}</span></div>
         `;
         wrap.appendChild(catRow);
 
         // Estimación de costo
         const cost = document.createElement('div');
         cost.style.marginBottom = '18px';
-        cost.innerHTML = `<span style="font-size:1.2em;">💰</span> <strong>Estimación de costo:</strong> <span style="color:#b91c1c;">${result.estimated_cost || 'N/D'}</span>`;
+        cost.innerHTML = `<strong style="color: #D4AF37;">Estimación de costo:</strong> <span style="color:#FFFFF0;">${result.estimated_cost || 'N/D'}</span>`;
         wrap.appendChild(cost);
 
         // Recomendaciones
         const rec = document.createElement('div');
-        rec.innerHTML = `<h3 style="margin-bottom:8px;"><span style="font-size:1.2em;">✅</span> Recomendaciones</h3>`;
+        rec.innerHTML = `<h3>Recomendaciones</h3>`;
         const recPre = document.createElement('pre');
         recPre.innerText = result.recommendations || '';
-        recPre.style.background = '#e0f2fe';
-        recPre.style.borderRadius = '8px';
-        recPre.style.padding = '12px';
-        recPre.style.fontSize = '1em';
         rec.appendChild(recPre);
         wrap.appendChild(rec);
 
         // Carta formal
         const letter = document.createElement('div');
-        letter.innerHTML = `<h3 style="margin-bottom:8px;"><span style="font-size:1.2em;">📄</span> Carta formal</h3>`;
+        letter.innerHTML = `<h3>Carta Formal</h3>`;
         const letterPre = document.createElement('pre');
         letterPre.innerText = result.letter || '';
-        letterPre.style.background = '#fef9c3';
-        letterPre.style.borderRadius = '8px';
-        letterPre.style.padding = '12px';
-        letterPre.style.fontSize = '1em';
         letter.appendChild(letterPre);
         wrap.appendChild(letter);
 
@@ -225,7 +258,7 @@
       }
 
       if (data.error) {
-        out.innerText = 'Error: ' + (data.error || '');
+        out.innerHTML = `<div class="card" style="padding: 2rem; background: rgba(220, 38, 38, 0.1); border: 1px solid rgba(220, 38, 38, 0.3);"><strong style="color: #DC2626;">Error:</strong> ${data.error || ''}</div>`;
       } else if (data.result) {
         // resultado ya en JSON con campos esperados
         renderFriendly(data.result);
@@ -241,17 +274,19 @@
           } else {
             // si no hay JSON, mostrar el texto crudo en cuadro grande
             const pre = document.createElement('pre');
+            pre.className = 'analysis-friendly';
             pre.innerText = data.result_text;
             out.appendChild(pre);
           }
         } catch (e) {
           const pre = document.createElement('pre');
+          pre.className = 'analysis-friendly';
           pre.innerText = data.result_text;
           out.appendChild(pre);
         }
       }
       btn.disabled = false;
-      btn.innerText = 'Entender (Redactar carta)';
+      btn.innerHTML = '<span style="margin-right: 0.5rem;">⚖️</span> Analizar y Redactar Carta Legal';
     });
 
     // Descargar .txt

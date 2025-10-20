@@ -9,13 +9,25 @@
 </head>
 
 <body>
-  <div class="container">
-    <header>
-      <h1>Conversaciones guardadas</h1>
-      <a href="/">Volver</a>
-    </header>
+  <!-- Added legal-themed header with golden styling and scales of justice icon -->
+  <div class="legal-header">
+    <div class="container">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <span style="font-size: 2.5rem;">⚖️</span>
+          <h1 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: 2rem; color: #D4AF37;">
+            Conversaciones Guardadas</h1>
+        </div>
+        <a href="/" class="btn btn-secondary" style="text-decoration: none;">← Volver al Inicio</a>
+      </div>
+    </div>
+  </div>
 
-    <div id="list"></div>
+  <div class="container" style="margin-top: 2rem;">
+    <!-- Added elegant card wrapper for conversations list -->
+    <div class="card" style="padding: 2rem;">
+      <div id="list"></div>
+    </div>
   </div>
 
   <script>
@@ -24,15 +36,51 @@
       const data = await res.json();
       const list = document.getElementById('list');
       if (!data.conversations || data.conversations.length === 0) {
-        list.innerHTML = '<p>No hay conversaciones guardadas.</p>';
+        list.innerHTML = '<div style="text-align: center; padding: 3rem; color: #9CA3AF;"><p style="font-size: 1.2rem; margin-bottom: 0.5rem;">📋</p><p>No hay conversaciones guardadas.</p><p style="font-size: 0.9rem; margin-top: 0.5rem;">Inicia una nueva consulta legal para comenzar.</p></div>';
         return;
       }
       const ul = document.createElement('ul');
+      ul.style.listStyle = 'none';
+      ul.style.padding = '0';
+      ul.style.margin = '0';
+
       data.conversations.forEach(c => {
         const li = document.createElement('li');
-        li.innerHTML = `<strong>${c.name}</strong> <small>(${c.timestamp || ''})</small> ` +
-          `<button data-id="${c.id}" class="viewBtn">Ver</button>` +
-          `<button data-id="${c.id}" class="delBtn">Eliminar</button>`;
+        li.style.background = 'linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, rgba(10, 22, 40, 0.3) 100%)';
+        li.style.border = '1px solid rgba(212, 175, 55, 0.2)';
+        li.style.borderRadius = '12px';
+        li.style.padding = '1.5rem';
+        li.style.marginBottom = '1rem';
+        li.style.display = 'flex';
+        li.style.justifyContent = 'space-between';
+        li.style.alignItems = 'center';
+        li.style.flexWrap = 'wrap';
+        li.style.gap = '1rem';
+        li.style.transition = 'all 0.3s ease';
+
+        li.innerHTML = `
+          <div style="flex: 1; min-width: 200px;">
+            <strong style="color: #D4AF37; font-size: 1.1rem; font-family: 'Cormorant Garamond', serif;">📄 ${c.name}</strong>
+            <small style="display: block; color: #9CA3AF; margin-top: 0.25rem; font-size: 0.85rem;">${c.timestamp || ''}</small>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button data-id="${c.id}" class="viewBtn btn btn-primary" style="padding: 0.5rem 1rem;">Ver Detalles</button>
+            <button data-id="${c.id}" class="delBtn btn btn-secondary" style="padding: 0.5rem 1rem;">Eliminar</button>
+          </div>
+        `;
+
+        li.addEventListener('mouseenter', () => {
+          li.style.transform = 'translateY(-2px)';
+          li.style.boxShadow = '0 8px 24px rgba(212, 175, 55, 0.15)';
+          li.style.borderColor = 'rgba(212, 175, 55, 0.4)';
+        });
+
+        li.addEventListener('mouseleave', () => {
+          li.style.transform = 'translateY(0)';
+          li.style.boxShadow = 'none';
+          li.style.borderColor = 'rgba(212, 175, 55, 0.2)';
+        });
+
         ul.appendChild(li);
       });
       list.innerHTML = '';
@@ -45,9 +93,9 @@
 
       document.querySelectorAll('.delBtn').forEach(b => b.addEventListener('click', async (e) => {
         const id = e.target.getAttribute('data-id');
-        if (!confirm('Eliminar conversación?')) return;
+        if (!confirm('¿Está seguro de eliminar esta conversación?')) return;
         const res = await fetch(`/api/conversation/${id}/delete`, { method: 'POST' });
-        if (res.ok) loadList(); else alert('Error eliminando');
+        if (res.ok) loadList(); else alert('Error eliminando la conversación');
       }));
     }
     loadList();

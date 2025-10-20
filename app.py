@@ -445,8 +445,15 @@ def api_conversation_entender(conv_id):
 
         user_msg = f"Conversación:\n{convo_text}\nPor favor devuelve el JSON requerido." 
 
-        # Intentar llamar al modelo GPT-3.5-turbo por defecto, con fallback a gpt-4 si se desea
+        # Verificar que tenemos la API key configurada
+        if not OPENAI_API_KEY:
+            logger.error('OPENAI_API_KEY no configurada; no se puede procesar con OpenAI')
+            return jsonify({'error': 'OPENAI_API_KEY no está configurada en el servidor. Configure la variable de entorno.'}), 503
+
+        # Intentar llamar al modelo (usar GPT_MODEL si está definido)
         model = os.environ.get('GPT_MODEL', 'gpt-4-1106-preview')
+        resp = None
+        assistant_text = None
         try:
             resp = client.chat.completions.create(
                 model=model,
@@ -457,19 +464,39 @@ def api_conversation_entender(conv_id):
                 max_tokens=1200,
                 temperature=0.6
             )
-        except Exception as e:
-            logger.warning(f"Fallo llamando a {model}: {e}. Intentando con gpt-4")
-            resp = client.chat.completions.create(
-                model='gpt-4',
-                messages=[
-                    {'role': 'system', 'content': system_msg},
-                    {'role': 'user', 'content': user_msg}
-                ],
-                max_tokens=1200,
-                temperature=0.3
-            )
+        except Exception as e_first:
+            logger.warning(f"Fallo llamando a {model}: {e_first}. Intentando con gpt-4")
+            try:
+                resp = client.chat.completions.create(
+                    model='gpt-4',
+                    messages=[
+                        {'role': 'system', 'content': system_msg},
+                        {'role': 'user', 'content': user_msg}
+                    ],
+                    max_tokens=1200,
+                    temperature=0.3
+                )
+            except Exception as e_second:
+                # Log completo y retornar error con detalles para debugging
+                logger.exception(f"Error llamando a OpenAI (intentos a {model} y gpt-4 fallaron)")
+                return jsonify({'error': 'Error llamando a OpenAI', 'details': str(e_second)}), 502
 
-        assistant_text = resp.choices[0].message.content
+        # Extraer texto de la respuesta de forma robusta
+        try:
+            # Intentar acceder a la estructura esperada
+            if hasattr(resp, 'choices') and len(resp.choices) > 0:
+                # Manejar objetos tipo dot-access
+                first = resp.choices[0]
+                if hasattr(first, 'message') and hasattr(first.message, 'content'):
+                    assistant_text = first.message.content
+                elif isinstance(first, dict) and 'message' in first and 'content' in first['message']:
+                    assistant_text = first['message']['content']
+            # Fallback a str(resp)
+            if assistant_text is None:
+                assistant_text = str(resp)
+        except Exception:
+            logger.exception('No se pudo extraer texto de la respuesta de OpenAI')
+            assistant_text = str(resp)
         # Intentar parsear JSON resultante
         parsed = None
         try:
@@ -699,6 +726,50 @@ def handle_audio_data(data):
         logger.error(f"Error processing audio data: {str(e)}")
         emit('error', {'message': 'Error procesando audio'})
 
+
+@app.route('/api/upload_voice_response', methods=['POST'])
+def upload_voice_response():
+    """
+    Endpoint para recibir archivos de audio (grabaciones manuales) desde el cliente.
+    Guarda el archivo en el directorio `conversaciones` y lo asocia a la conversación en memoria si existe.
+    """
+    try:
+        if 'file' not in request.files:
+            return jsonify({'error': 'No se encontró el archivo'}), 400
+
+        file = request.files['file']
+        conv_id = request.form.get('conversation_id') or request.args.get('conversation_id')
+
+        if not conv_id:
+            return jsonify({'error': 'Falta conversation_id'}), 400
+
+        # Crear directorio si no existe
+        os.makedirs('conversaciones', exist_ok=True)
+
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        filename = f'conversaciones/audio_{conv_id}_{timestamp}_{uuid.uuid4().hex}.webm'
+
+        # Guardar archivo
+        file.save(filename)
+        logger.info(f'Audio uploaded and saved: {filename}')
+
+        # Asociar referencia en la conversación en memoria (si existe)
+        if conv_id in conversations:
+            conversations[conv_id].setdefault('responses', [])
+            conversations[conv_id]['responses'].append({
+                'role': 'user',
+                'content': f'[Adjunto audio] {filename}',
+                'timestamp': datetime.now().isoformat(),
+                'type': 'audio',
+                'file': filename
+            })
+
+        return jsonify({'message': 'Audio recibido y guardado', 'path': filename})
+
+    except Exception as e:
+        logger.error(f'Error uploading voice response: {str(e)}')
+        return jsonify({'error': 'Error al subir el audio'}), 500
+
 @socketio.on('text_input')
 def handle_text_input(data):
     """
@@ -766,4 +837,3 @@ if __name__ == '__main__':
         debug=os.environ.get('FLASK_ENV') == 'development',
         use_reloader=os.environ.get('FLASK_ENV') == 'development'
     )
-
