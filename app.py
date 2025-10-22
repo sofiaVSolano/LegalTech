@@ -709,6 +709,7 @@ def api_conversation_entender(conv_id):
                 subdivision = parsed.get('subdivision', '')
                 lawyer = get_lawyer_recommendation(category, subdivision)
                 conversations[conv_id]['analysis']['abogado_recomendado'] = lawyer
+                logger.info(f"Abogado recomendado agregado: {lawyer['nombre']}")
         else:
             conversations[conv_id].setdefault('analysis', {})
             conversations[conv_id]['analysis_raw'] = assistant_text
@@ -716,15 +717,22 @@ def api_conversation_entender(conv_id):
         # Guardar en disco
         save_conversation(conv_id)
 
-        # Retornar el resultado
+        # Retornar el resultado (INCLUYENDO el abogado recomendado)
         if parsed:
+            # Incluir el abogado recomendado si se agregó
+            if conv_id in conversations and 'analysis' in conversations[conv_id]:
+                result_to_send = conversations[conv_id]['analysis'].copy()
+                # Asegurarse de que tenemos todos los campos originales
+                for key in parsed:
+                    if key not in result_to_send:
+                        result_to_send[key] = parsed[key]
+                return jsonify({'result': result_to_send})
             return jsonify({'result': parsed})
         return jsonify({'result_text': assistant_text})
 
     except Exception as e:
         logger.error(f"Error processing 'entender' for {conv_id}: {str(e)}")
         return jsonify({'error': 'No se pudo procesar la conversación con OpenAI'}), 500
-
 
 @app.route('/api/conversation/<conv_id>/download.txt', methods=['GET'])
 def api_download_letter_txt(conv_id):

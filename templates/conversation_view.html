@@ -26,30 +26,47 @@
       width: 100%;
       box-sizing: border-box;
       overflow-x: auto;
-      background: linear-gradient(135deg, #fffee0 0%, #cbb567 100%) !important;
-      border: 1px solid #cbb567 !important;
-      border-radius: 12px !important;
-      padding: 24px !important;
-      box-shadow: 0 4px 16px rgba(203, 181, 103, 0.12) !important;
+      background: linear-gradient(135deg, #fdfcf0 0%, #f5f1e1 100%) !important;
+      border: 2px solid #D4AF37 !important;
+      border-radius: 16px !important;
+      padding: 32px !important;
+      box-shadow: 0 8px 24px rgba(212, 175, 55, 0.2) !important;
       margin-bottom: 24px !important;
     }
 
-    .analysis-friendly h2,
+    .analysis-friendly h2 {
+      color: #8B6914;
+      font-family: 'Cormorant Garamond', 'Georgia', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 28px;
+      padding-bottom: 12px;
+      border-bottom: 3px solid #D4AF37;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
     .analysis-friendly h3 {
-      color: #D4AF37;
-      font-family: 'Cormorant Garamond', serif;
+      color: #8B6914;
+      font-family: 'Cormorant Garamond', 'Georgia', serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-top: 28px;
+      margin-bottom: 16px;
     }
 
     .analysis-friendly pre {
-      background: rgba(255, 255, 255, 0.85) !important;
-      border: 1px solid rgba(203, 181, 103, 0.3) !important;
-      color: #000000 !important;
-      border-radius: 8px !important;
-      padding: 16px !important;
-      font-size: 0.95em !important;
-      line-height: 1.6;
+      background: white !important;
+      border: 2px solid rgba(212, 175, 55, 0.3) !important;
+      color: #1f2937 !important;
+      border-radius: 12px !important;
+      padding: 20px !important;
+      font-size: 1rem !important;
+      line-height: 1.8 !important;
       white-space: pre-wrap;
       word-wrap: break-word;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
     }
 
     .message {
@@ -72,6 +89,259 @@
 
     .message.assistant {
       border-left-color: #D4AF37;
+    }
+
+    /* ESTILOS MEJORADOS */
+    
+    /* Tarjeta de "Necesita Abogado" */
+    .needs-lawyer-card {
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 28px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      border-width: 2px;
+      border-style: solid;
+    }
+
+    .needs-lawyer-card.yes {
+      background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
+      border-color: #dc2626;
+    }
+
+    .needs-lawyer-card.no {
+      background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+      border-color: #059669;
+    }
+
+    .needs-lawyer-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+
+    .needs-lawyer-icon {
+      font-size: 3em;
+      line-height: 1;
+    }
+
+    .needs-lawyer-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .needs-lawyer-title.yes {
+      color: #991b1b;
+    }
+
+    .needs-lawyer-title.no {
+      color: #047857;
+    }
+
+    .needs-lawyer-reason {
+      margin-top: 12px;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 8px;
+      color: #1f2937;
+      line-height: 1.7;
+      font-size: 1rem;
+      border-left: 4px solid currentColor;
+    }
+
+    .needs-lawyer-reason.yes {
+      border-left-color: #dc2626;
+    }
+
+    .needs-lawyer-reason.no {
+      border-left-color: #059669;
+    }
+
+    /* Tarjeta del Abogado */
+    .lawyer-card {
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+      border: 2px solid #0284c7;
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 28px;
+      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.15);
+    }
+
+    .lawyer-card-header {
+      color: #0369a1;
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Cormorant Garamond', 'Georgia', serif;
+    }
+
+    .lawyer-card-content {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .lawyer-name {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #0c4a6e;
+      margin-bottom: 8px;
+      font-family: 'Cormorant Garamond', 'Georgia', serif;
+    }
+
+    .lawyer-specialty {
+      color: #0369a1;
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .lawyer-rating {
+      color: #f59e0b;
+      font-size: 1.2rem;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .lawyer-description {
+      background: #f0f9ff;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 20px;
+      border-left: 4px solid #0284c7;
+    }
+
+    .lawyer-description p {
+      color: #374151;
+      line-height: 1.7;
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .lawyer-contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .lawyer-contact-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: #f8fafc;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .lawyer-contact-item:hover {
+      background: #e0f2fe;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .lawyer-contact-icon {
+      font-size: 1.5em;
+    }
+
+    .lawyer-contact-label {
+      font-size: 0.85rem;
+      color: #6b7280;
+      margin-bottom: 2px;
+      font-weight: 500;
+    }
+
+    .lawyer-contact-value {
+      color: #0c4a6e;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    /* Categoría y Subdivisión */
+    .category-row-improved {
+      display: flex;
+      gap: 32px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      padding: 16px;
+      background: rgba(212, 175, 55, 0.08);
+      border-radius: 10px;
+      border: 1px solid rgba(212, 175, 55, 0.2);
+    }
+
+    .category-item-improved {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .category-label-improved {
+      color: #8B6914;
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .category-value-improved {
+      color: #1f2937;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    /* Estimación de Costo */
+    .cost-section-improved {
+      margin-bottom: 24px;
+      padding: 16px;
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+      border-radius: 10px;
+      border: 2px solid #f59e0b;
+    }
+
+    .cost-label-improved {
+      color: #92400e;
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .cost-value-improved {
+      color: #1f2937;
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .analysis-friendly {
+        padding: 20px !important;
+      }
+
+      .lawyer-card {
+        padding: 20px;
+      }
+
+      .category-row-improved {
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .lawyer-contact-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .analysis-friendly h2 {
+        font-size: 1.6rem;
+      }
     }
   </style>
 </head>
@@ -119,349 +389,334 @@
 
   <script>
     const convId = '{{ conversation_id }}';
-async function loadConversation() {
-  const res = await fetch(`/api/conversation/${convId}`);
-  if (!res.ok) return document.getElementById('conversationArea').innerText = 'Conversación no encontrada';
-  const data = await res.json();
-  const conv = data.conversation;
-  const area = document.getElementById('conversationArea');
-  area.innerHTML = '';
-  conv.responses.forEach(r => {
-    const p = document.createElement('div');
-    p.className = 'message ' + r.role;
-    p.innerHTML = `<strong>${r.role === 'user' ? 'Cliente' : 'Asistente Legal'}</strong>: ${r.content}`;
-    area.appendChild(p);
-  });
 
-  // mostrar análisis si existe
-  const resultArea = document.getElementById('resultArea');
-  if (conv.analysis) {
-    renderSavedAnalysis(conv.analysis);
-    if (conv.analysis_raw) {
-      const rawWrap = document.createElement('div');
-      rawWrap.className = 'analysis-friendly';
-      const rawHdr = document.createElement('h3');
-      rawHdr.innerHTML = 'Texto Crudo del Análisis';
-      rawHdr.style.marginBottom = '10px';
-      rawWrap.appendChild(rawHdr);
-      const rawPre = document.createElement('pre');
-      rawPre.innerText = conv.analysis_raw;
-      rawWrap.appendChild(rawPre);
-      resultArea.appendChild(rawWrap);
-    }
-    try { document.getElementById('downloadTxtBtn').style.display = 'inline-block'; } catch (e) { }
-    try { document.getElementById('downloadDocxBtn').style.display = 'inline-block'; } catch (e) { }
-  }
-}
+    async function loadConversation() {
+      const res = await fetch(`/api/conversation/${convId}`);
+      if (!res.ok) return document.getElementById('conversationArea').innerText = 'Conversación no encontrada';
+      const data = await res.json();
+      const conv = data.conversation;
+      const area = document.getElementById('conversationArea');
+      area.innerHTML = '';
+      conv.responses.forEach(r => {
+        const p = document.createElement('div');
+        p.className = 'message ' + r.role;
+        p.innerHTML = `<strong>${r.role === 'user' ? 'Cliente' : 'Asistente Legal'}</strong>: ${r.content}`;
+        area.appendChild(p);
+      });
 
-// Función para renderizar el análisis guardado con recomendación de abogado
-function renderSavedAnalysis(result) {
-  const resultArea = document.getElementById('resultArea');
-  resultArea.innerHTML = '';
-  const wrap = document.createElement('div');
-  wrap.className = 'analysis-friendly';
-
-  const hdr = document.createElement('h2');
-  hdr.innerHTML = '<span style="font-size:1.5em;vertical-align:middle;">⚖️</span> Análisis Legal Guardado';
-  hdr.style.marginBottom = '18px';
-  wrap.appendChild(hdr);
-
-  // Mostrar si necesita abogado
-  if (result.necesita_abogado) {
-    const needsLawyer = document.createElement('div');
-    needsLawyer.style.cssText = `
-      background: ${result.necesita_abogado.toLowerCase() === 'si' ? 'linear-gradient(135deg, #fee2e2, #fca5a5)' : 'linear-gradient(135deg, #d1fae5, #6ee7b7)'};
-      border: 2px solid ${result.necesita_abogado.toLowerCase() === 'si' ? '#dc2626' : '#059669'};
-      border-radius: 10px;
-      padding: 16px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    `;
-    
-    const icon = result.necesita_abogado.toLowerCase() === 'si' ? '⚠️' : '✅';
-    const text = result.necesita_abogado.toLowerCase() === 'si' 
-      ? '<strong style="color: #991b1b;">SÍ NECESITA UN ABOGADO</strong>' 
-      : '<strong style="color: #047857;">NO NECESITA UN ABOGADO</strong>';
-    
-    needsLawyer.innerHTML = `
-      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
-        <span style="font-size: 2em;">${icon}</span>
-        <div style="flex: 1;">
-          ${text}
-          ${result.razon_abogado ? `<p style="margin-top: 8px; color: #374151; line-height: 1.5;">${result.razon_abogado}</p>` : ''}
-        </div>
-      </div>
-    `;
-    wrap.appendChild(needsLawyer);
-  }
-
-  // Mostrar recomendación de abogado si necesita uno
-  if (result.necesita_abogado && result.necesita_abogado.toLowerCase() === 'si' && result.abogado_recomendado) {
-    const lawyer = result.abogado_recomendado;
-    const lawyerCard = document.createElement('div');
-    lawyerCard.style.cssText = `
-      background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
-      border: 2px solid #0284c7;
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.15);
-    `;
-    
-    const stars = '⭐'.repeat(Math.floor(lawyer.calificacion || 0));
-    
-    lawyerCard.innerHTML = `
-      <h3 style="color: #0369a1; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
-        <span style="font-size: 1.5em;">👨‍⚖️</span>
-        Abogado Recomendado
-      </h3>
-      <div style="background: white; border-radius: 8px; padding: 16px;">
-        <div style="margin-bottom: 12px;">
-          <strong style="font-size: 1.2em; color: #0c4a6e;">${lawyer.nombre || 'N/D'}</strong>
-          <div style="color: #0369a1; margin-top: 4px;">${lawyer.especialidad || 'N/D'}</div>
-          <div style="margin-top: 4px; color: #f59e0b;">${stars} (${lawyer.calificacion || 'N/D'})</div>
-        </div>
-        
-        <div style="background: #f0f9ff; border-radius: 6px; padding: 12px; margin-bottom: 12px;">
-          <p style="color: #374151; line-height: 1.6; margin: 0;">${lawyer.descripcion || 'N/D'}</p>
-        </div>
-        
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <span style="font-size: 1.2em;">📞</span>
-            <div>
-              <div style="font-size: 0.85em; color: #6b7280;">Teléfono</div>
-              <strong style="color: #0c4a6e;">${lawyer.telefono || 'N/D'}</strong>
-            </div>
-          </div>
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <span style="font-size: 1.2em;">📧</span>
-            <div>
-              <div style="font-size: 0.85em; color: #6b7280;">Email</div>
-              <strong style="color: #0c4a6e;">${lawyer.email || 'N/D'}</strong>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-    wrap.appendChild(lawyerCard);
-  }
-
-  // Categoría y subdivisión
-  const catRow = document.createElement('div');
-  catRow.style.display = 'flex';
-  catRow.style.gap = '32px';
-  catRow.style.marginBottom = '12px';
-  catRow.style.flexWrap = 'wrap';
-  catRow.innerHTML = `
-    <div><strong style="color: #D4AF37;">Categoría:</strong> <span style="color:#000000;">${result.category || 'N/D'}</span></div>
-    <div><strong style="color: #D4AF37;">Subdivisión:</strong> <span style="color:#000000;">${result.subdivision || 'N/D'}</span></div>
-  `;
-  wrap.appendChild(catRow);
-
-  // Estimación de costo
-  const cost = document.createElement('div');
-  cost.style.marginBottom = '18px';
-  cost.innerHTML = `<strong style="color: #D4AF37;">Estimación de costo:</strong> <span style="color:#000000;">${result.estimated_cost || 'N/D'}</span>`;
-  wrap.appendChild(cost);
-
-  // Recomendaciones
-  const rec = document.createElement('div');
-  rec.innerHTML = `<h3 style="color: #D4AF37;">📋 Recomendaciones</h3>`;
-  const recPre = document.createElement('pre');
-  recPre.innerText = result.recommendations || '';
-  rec.appendChild(recPre);
-  wrap.appendChild(rec);
-
-  // Carta formal
-  const letter = document.createElement('div');
-  letter.innerHTML = `<h3 style="color: #D4AF37;">📄 Carta Formal</h3>`;
-  const letterPre = document.createElement('pre');
-  letterPre.innerText = result.letter || '';
-  letter.appendChild(letterPre);
-  wrap.appendChild(letter);
-
-  resultArea.appendChild(wrap);
-}
-
-document.getElementById('entenderBtn').addEventListener('click', async () => {
-  const btn = document.getElementById('entenderBtn');
-  btn.disabled = true;
-  btn.innerHTML = 'Procesando análisis legal...';
-  const res = await fetch(`/api/conversation/${convId}/entender`, { method: 'POST' });
-  const data = await res.json();
-  const out = document.getElementById('resultArea');
-  
-  function renderFriendly(result) {
-    out.innerHTML = '';
-    const wrap = document.createElement('div');
-    wrap.className = 'analysis-friendly';
-
-    const hdr = document.createElement('h2');
-    hdr.innerHTML = '<span style="font-size:1.5em;vertical-align:middle;">⚖️</span> Análisis Legal Generado';
-    hdr.style.marginBottom = '18px';
-    wrap.appendChild(hdr);
-
-    // Mostrar si necesita abogado
-    if (result.necesita_abogado) {
-      const needsLawyer = document.createElement('div');
-      needsLawyer.style.cssText = `
-        background: ${result.necesita_abogado.toLowerCase() === 'si' ? 'linear-gradient(135deg, #fee2e2, #fca5a5)' : 'linear-gradient(135deg, #d1fae5, #6ee7b7)'};
-        border: 2px solid ${result.necesita_abogado.toLowerCase() === 'si' ? '#dc2626' : '#059669'};
-        border-radius: 10px;
-        padding: 16px;
-        margin-bottom: 20px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      `;
-      
-      const icon = result.necesita_abogado.toLowerCase() === 'si' ? '⚠️' : '✅';
-      const text = result.necesita_abogado.toLowerCase() === 'si' 
-        ? '<strong style="color: #991b1b;">SÍ NECESITA UN ABOGADO</strong>' 
-        : '<strong style="color: #047857;">NO NECESITA UN ABOGADO</strong>';
-      
-      needsLawyer.innerHTML = `
-        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
-          <span style="font-size: 2em;">${icon}</span>
-          <div style="flex: 1;">
-            ${text}
-            ${result.razon_abogado ? `<p style="margin-top: 8px; color: #374151; line-height: 1.5;">${result.razon_abogado}</p>` : ''}
-          </div>
-        </div>
-      `;
-      wrap.appendChild(needsLawyer);
-    }
-
-    // Mostrar recomendación de abogado si necesita uno
-    if (result.necesita_abogado && result.necesita_abogado.toLowerCase() === 'si' && result.abogado_recomendado) {
-      const lawyer = result.abogado_recomendado;
-      const lawyerCard = document.createElement('div');
-      lawyerCard.style.cssText = `
-        background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
-        border: 2px solid #0284c7;
-        border-radius: 12px;
-        padding: 20px;
-        margin-bottom: 20px;
-        box-shadow: 0 4px 12px rgba(2, 132, 199, 0.15);
-      `;
-      
-      const stars = '⭐'.repeat(Math.floor(lawyer.calificacion || 0));
-      
-      lawyerCard.innerHTML = `
-        <h3 style="color: #0369a1; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
-          <span style="font-size: 1.5em;">👨‍⚖️</span>
-          Abogado Recomendado
-        </h3>
-        <div style="background: white; border-radius: 8px; padding: 16px;">
-          <div style="margin-bottom: 12px;">
-            <strong style="font-size: 1.2em; color: #0c4a6e;">${lawyer.nombre || 'N/D'}</strong>
-            <div style="color: #0369a1; margin-top: 4px;">${lawyer.especialidad || 'N/D'}</div>
-            <div style="margin-top: 4px; color: #f59e0b;">${stars} (${lawyer.calificacion || 'N/D'})</div>
-          </div>
-          
-          <div style="background: #f0f9ff; border-radius: 6px; padding: 12px; margin-bottom: 12px;">
-            <p style="color: #374151; line-height: 1.6; margin: 0;">${lawyer.descripcion || 'N/D'}</p>
-          </div>
-          
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <span style="font-size: 1.2em;">📞</span>
-              <div>
-                <div style="font-size: 0.85em; color: #6b7280;">Teléfono</div>
-                <strong style="color: #0c4a6e;">${lawyer.telefono || 'N/D'}</strong>
-              </div>
-            </div>
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <span style="font-size: 1.2em;">📧</span>
-              <div>
-                <div style="font-size: 0.85em; color: #6b7280;">Email</div>
-                <strong style="color: #0c4a6e;">${lawyer.email || 'N/D'}</strong>
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-      wrap.appendChild(lawyerCard);
-    }
-
-    // Categoría y subdivisión
-    const catRow = document.createElement('div');
-    catRow.style.display = 'flex';
-    catRow.style.gap = '32px';
-    catRow.style.marginBottom = '12px';
-    catRow.style.flexWrap = 'wrap';
-    catRow.innerHTML = `
-      <div><strong style="color: #D4AF37;">Categoría:</strong> <span style="color:#FFFFF0;">${result.category || 'N/D'}</span></div>
-      <div><strong style="color: #D4AF37;">Subdivisión:</strong> <span style="color:#FFFFF0;">${result.subdivision || 'N/D'}</span></div>
-    `;
-    wrap.appendChild(catRow);
-
-    // Estimación de costo
-    const cost = document.createElement('div');
-    cost.style.marginBottom = '18px';
-    cost.innerHTML = `<strong style="color: #D4AF37;">Estimación de costo:</strong> <span style="color:#FFFFF0;">${result.estimated_cost || 'N/D'}</span>`;
-    wrap.appendChild(cost);
-
-    // Recomendaciones
-    const rec = document.createElement('div');
-    rec.innerHTML = `<h3 style="color: #D4AF37;">📋 Recomendaciones</h3>`;
-    const recPre = document.createElement('pre');
-    recPre.innerText = result.recommendations || '';
-    rec.appendChild(recPre);
-    wrap.appendChild(rec);
-
-    // Carta formal
-    const letter = document.createElement('div');
-    letter.innerHTML = `<h3 style="color: #D4AF37;">📄 Carta Formal</h3>`;
-    const letterPre = document.createElement('pre');
-    letterPre.innerText = result.letter || '';
-    letter.appendChild(letterPre);
-    wrap.appendChild(letter);
-
-    out.appendChild(wrap);
-  }
-
-  if (data.error) {
-    out.innerHTML = `<div class="card" style="padding: 2rem; background: rgba(220, 38, 38, 0.1); border: 1px solid rgba(220, 38, 38, 0.3);"><strong style="color: #DC2626;">Error:</strong> ${data.error || ''}</div>`;
-  } else if (data.result) {
-    renderFriendly(data.result);
-    try { document.getElementById('downloadTxtBtn').style.display = 'inline-block'; } catch (e) { }
-    try { document.getElementById('downloadDocxBtn').style.display = 'inline-block'; } catch (e) { }
-  } else if (data.result_text) {
-    try {
-      const m = data.result_text.match(/(\{[\s\S]*\})/);
-      if (m) {
-        const parsed = JSON.parse(m[1]);
-        renderFriendly(parsed);
-      } else {
-        const pre = document.createElement('pre');
-        pre.className = 'analysis-friendly';
-        pre.innerText = data.result_text;
-        out.appendChild(pre);
+      // mostrar análisis si existe
+      const resultArea = document.getElementById('resultArea');
+      if (conv.analysis) {
+        renderSavedAnalysis(conv.analysis);
+        if (conv.analysis_raw) {
+          const rawWrap = document.createElement('div');
+          rawWrap.className = 'analysis-friendly';
+          const rawHdr = document.createElement('h3');
+          rawHdr.innerHTML = 'Texto Crudo del Análisis';
+          rawHdr.style.marginBottom = '10px';
+          rawWrap.appendChild(rawHdr);
+          const rawPre = document.createElement('pre');
+          rawPre.innerText = conv.analysis_raw;
+          rawWrap.appendChild(rawPre);
+          resultArea.appendChild(rawWrap);
+        }
+        try { document.getElementById('downloadTxtBtn').style.display = 'inline-block'; } catch (e) { }
+        try { document.getElementById('downloadDocxBtn').style.display = 'inline-block'; } catch (e) { }
       }
-    } catch (e) {
-      const pre = document.createElement('pre');
-      pre.className = 'analysis-friendly';
-      pre.innerText = data.result_text;
-      out.appendChild(pre);
     }
-  }
-  btn.disabled = false;
-  btn.innerHTML = '<span style="margin-right: 0.5rem;">⚖️</span> Analizar y Redactar Carta Legal';
-});
 
-// Descargar .txt
-document.getElementById('downloadTxtBtn').addEventListener('click', () => {
-  const url = `/api/conversation/${convId}/download.txt`;
-  window.location.href = url;
-});
+    // Función para renderizar el análisis guardado con recomendación de abogado
+    function renderSavedAnalysis(result) {
+      const resultArea = document.getElementById('resultArea');
+      resultArea.innerHTML = '';
+      const wrap = document.createElement('div');
+      wrap.className = 'analysis-friendly';
 
-// Descargar .docx
-document.getElementById('downloadDocxBtn').addEventListener('click', () => {
-  const url = `/api/conversation/${convId}/download.docx`;
-  window.location.href = url;
-});
+      const hdr = document.createElement('h2');
+      hdr.innerHTML = '<span style="font-size:1.5em;vertical-align:middle;">⚖️</span> Análisis Legal Guardado';
+      wrap.appendChild(hdr);
 
-loadConversation();
+      // Mostrar si necesita abogado
+      if (result.necesita_abogado) {
+        const needsLawyer = document.createElement('div');
+        const isYes = result.necesita_abogado.toLowerCase() === 'si';
+        needsLawyer.className = `needs-lawyer-card ${isYes ? 'yes' : 'no'}`;
+        
+        const icon = isYes ? '⚠️' : '✅';
+        const titleClass = isYes ? 'yes' : 'no';
+        const titleText = isYes ? 'SÍ NECESITA UN ABOGADO' : 'NO NECESITA UN ABOGADO';
+        
+        needsLawyer.innerHTML = `
+          <div class="needs-lawyer-header">
+            <span class="needs-lawyer-icon">${icon}</span>
+            <div style="flex: 1;">
+              <div class="needs-lawyer-title ${titleClass}">${titleText}</div>
+            </div>
+          </div>
+          ${result.razon_abogado ? `<div class="needs-lawyer-reason ${titleClass}">${result.razon_abogado}</div>` : ''}
+        `;
+        wrap.appendChild(needsLawyer);
+      }
+
+      // Mostrar recomendación de abogado si necesita uno
+      if (result.necesita_abogado && result.necesita_abogado.toLowerCase() === 'si' && result.abogado_recomendado) {
+        const lawyer = result.abogado_recomendado;
+        const lawyerCard = document.createElement('div');
+        lawyerCard.className = 'lawyer-card';
+        
+        const stars = '⭐'.repeat(Math.floor(lawyer.calificacion || 0));
+        const ratingNum = lawyer.calificacion || 'N/D';
+        
+        lawyerCard.innerHTML = `
+          <div class="lawyer-card-header">
+            <span style="font-size: 1.5em;">👨‍⚖️</span>
+            Abogado Recomendado
+          </div>
+          <div class="lawyer-card-content">
+            <div class="lawyer-name">${lawyer.nombre || 'N/D'}</div>
+            <div class="lawyer-specialty">${lawyer.especialidad || 'N/D'}</div>
+            <div class="lawyer-rating">
+              ${stars} <span style="font-size: 0.9em; color: #6b7280;">(${ratingNum})</span>
+            </div>
+            
+            <div class="lawyer-description">
+              <p>${lawyer.descripcion || 'N/D'}</p>
+            </div>
+            
+            <div class="lawyer-contact-grid">
+              <div class="lawyer-contact-item">
+                <span class="lawyer-contact-icon">📞</span>
+                <div>
+                  <div class="lawyer-contact-label">Teléfono</div>
+                  <div class="lawyer-contact-value">${lawyer.telefono || 'N/D'}</div>
+                </div>
+              </div>
+              <div class="lawyer-contact-item">
+                <span class="lawyer-contact-icon">📧</span>
+                <div>
+                  <div class="lawyer-contact-label">Email</div>
+                  <div class="lawyer-contact-value">${lawyer.email || 'N/D'}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        wrap.appendChild(lawyerCard);
+      }
+
+      // Categoría y subdivisión
+      const catRow = document.createElement('div');
+      catRow.className = 'category-row-improved';
+      catRow.innerHTML = `
+        <div class="category-item-improved">
+          <div class="category-label-improved">Categoría</div>
+          <div class="category-value-improved">${result.category || 'N/D'}</div>
+        </div>
+        <div class="category-item-improved">
+          <div class="category-label-improved">Subdivisión</div>
+          <div class="category-value-improved">${result.subdivision || 'N/D'}</div>
+        </div>
+      `;
+      wrap.appendChild(catRow);
+
+      // Estimación de costo
+      const cost = document.createElement('div');
+      cost.className = 'cost-section-improved';
+      cost.innerHTML = `
+        <div class="cost-label-improved">💰 Estimación de Costo</div>
+        <div class="cost-value-improved">${result.estimated_cost || 'N/D'}</div>
+      `;
+      wrap.appendChild(cost);
+
+      // Recomendaciones
+      const rec = document.createElement('div');
+      rec.innerHTML = `<h3>📋 Recomendaciones</h3>`;
+      const recPre = document.createElement('pre');
+      recPre.innerText = result.recommendations || '';
+      rec.appendChild(recPre);
+      wrap.appendChild(rec);
+
+      // Carta formal
+      const letter = document.createElement('div');
+      letter.innerHTML = `<h3>📄 Carta Formal</h3>`;
+      const letterPre = document.createElement('pre');
+      letterPre.innerText = result.letter || '';
+      letter.appendChild(letterPre);
+      wrap.appendChild(letter);
+
+      resultArea.appendChild(wrap);
+    }
+
+    document.getElementById('entenderBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('entenderBtn');
+      btn.disabled = true;
+      btn.innerHTML = 'Procesando análisis legal...';
+      const res = await fetch(`/api/conversation/${convId}/entender`, { method: 'POST' });
+      const data = await res.json();
+      const out = document.getElementById('resultArea');
+      
+      function renderFriendly(result) {
+        out.innerHTML = '';
+        const wrap = document.createElement('div');
+        wrap.className = 'analysis-friendly';
+
+        const hdr = document.createElement('h2');
+        hdr.innerHTML = '<span style="font-size:1.5em;vertical-align:middle;">⚖️</span> Análisis Legal Generado';
+        wrap.appendChild(hdr);
+
+        // Mostrar si necesita abogado
+        if (result.necesita_abogado) {
+          const needsLawyer = document.createElement('div');
+          const isYes = result.necesita_abogado.toLowerCase() === 'si';
+          needsLawyer.className = `needs-lawyer-card ${isYes ? 'yes' : 'no'}`;
+          
+          const icon = isYes ? '⚠️' : '✅';
+          const titleClass = isYes ? 'yes' : 'no';
+          const titleText = isYes ? 'SÍ NECESITA UN ABOGADO' : 'NO NECESITA UN ABOGADO';
+          
+          needsLawyer.innerHTML = `
+            <div class="needs-lawyer-header">
+              <span class="needs-lawyer-icon">${icon}</span>
+              <div style="flex: 1;">
+                <div class="needs-lawyer-title ${titleClass}">${titleText}</div>
+              </div>
+            </div>
+            ${result.razon_abogado ? `<div class="needs-lawyer-reason ${titleClass}">${result.razon_abogado}</div>` : ''}
+          `;
+          wrap.appendChild(needsLawyer);
+        }
+
+        // Mostrar recomendación de abogado si necesita uno
+        if (result.necesita_abogado && result.necesita_abogado.toLowerCase() === 'si' && result.abogado_recomendado) {
+          const lawyer = result.abogado_recomendado;
+          const lawyerCard = document.createElement('div');
+          lawyerCard.className = 'lawyer-card';
+          
+          const stars = '⭐'.repeat(Math.floor(lawyer.calificacion || 0));
+          const ratingNum = lawyer.calificacion || 'N/D';
+          
+          lawyerCard.innerHTML = `
+            <div class="lawyer-card-header">
+              <span style="font-size: 1.5em;">👨‍⚖️</span>
+              Abogado Recomendado
+            </div>
+            <div class="lawyer-card-content">
+              <div class="lawyer-name">${lawyer.nombre || 'N/D'}</div>
+              <div class="lawyer-specialty">${lawyer.especialidad || 'N/D'}</div>
+              <div class="lawyer-rating">
+                ${stars} <span style="font-size: 0.9em; color: #6b7280;">(${ratingNum})</span>
+              </div>
+              
+              <div class="lawyer-description">
+                <p>${lawyer.descripcion || 'N/D'}</p>
+              </div>
+              
+              <div class="lawyer-contact-grid">
+                <div class="lawyer-contact-item">
+                  <span class="lawyer-contact-icon">📞</span>
+                  <div>
+                    <div class="lawyer-contact-label">Teléfono</div>
+                    <div class="lawyer-contact-value">${lawyer.telefono || 'N/D'}</div>
+                  </div>
+                </div>
+                <div class="lawyer-contact-item">
+                  <span class="lawyer-contact-icon">📧</span>
+                  <div>
+                    <div class="lawyer-contact-label">Email</div>
+                    <div class="lawyer-contact-value">${lawyer.email || 'N/D'}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+          wrap.appendChild(lawyerCard);
+        }
+
+        // Categoría y subdivisión
+        const catRow = document.createElement('div');
+        catRow.className = 'category-row-improved';
+        catRow.innerHTML = `
+          <div class="category-item-improved">
+            <div class="category-label-improved">Categoría</div>
+            <div class="category-value-improved">${result.category || 'N/D'}</div>
+          </div>
+          <div class="category-item-improved">
+            <div class="category-label-improved">Subdivisión</div>
+            <div class="category-value-improved">${result.subdivision || 'N/D'}</div>
+          </div>
+        `;
+        wrap.appendChild(catRow);
+
+        // Estimación de costo
+        const cost = document.createElement('div');
+        cost.className = 'cost-section-improved';
+        cost.innerHTML = `
+          <div class="cost-label-improved">💰 Estimación de Costo</div>
+          <div class="cost-value-improved">${result.estimated_cost || 'N/D'}</div>
+        `;
+        wrap.appendChild(cost);
+
+        // Recomendaciones
+        const rec = document.createElement('div');
+        rec.innerHTML = `<h3>📋 Recomendaciones</h3>`;
+        const recPre = document.createElement('pre');
+        recPre.innerText = result.recommendations || '';
+        rec.appendChild(recPre);
+        wrap.appendChild(rec);
+
+        // Carta formal
+        const letter = document.createElement('div');
+        letter.innerHTML = `<h3>📄 Carta Formal</h3>`;
+        const letterPre = document.createElement('pre');
+        letterPre.innerText = result.letter || '';
+        letter.appendChild(letterPre);
+        wrap.appendChild(letter);
+
+        out.appendChild(wrap);
+      }
+
+      if (data.error) {
+        out.innerHTML = `<div class="card" style="padding: 2rem; background: rgba(220, 38, 38, 0.1); border: 1px solid rgba(220, 38, 38, 0.3);"><strong style="color: #DC2626;">Error:</strong> ${data.error || ''}</div>`;
+      } else if (data.result) {
+        renderFriendly(data.result);
+        try { document.getElementById('downloadTxtBtn').style.display = 'inline-block'; } catch (e) { }
+        try { document.getElementById('downloadDocxBtn').style.display = 'inline-block'; } catch (e) { }
+      } else if (data.result_text) {
+        try {
+          const m = data.result_text.match(/(\{[\s\S]*\})/);
+          if (m) {
+            const parsed = JSON.parse(m[1]);
+            renderFriendly(parsed);
+          } else {
+            const pre = document.createElement('pre');
+            pre.className = 'analysis-friendly';
+            pre.innerText = data.result_text;
+            out.appendChild(pre);
+          }
+        } catch (e) {
+          const pre = document.createElement('pre');
+          pre.className = 'analysis-friendly';
+          pre.innerText = data.result_text;
+          out.appendChild(pre);
+        }
+      }
+      btn.disabled = false;
+      btn.innerHTML = '<span style="margin-right: 0.5rem;">⚖️</span> Analizar y Redactar Carta Legal';
+    });
+
+    // Descargar .txt
+    document.getElementById('downloadTxtBtn').addEventListener('click', () => {
+      const url = `/api/conversation/${convId}/download.txt`;
+      window.location.href = url;
+    });
+
+    // Descargar .docx
+    document.getElementById('downloadDocxBtn').addEventListener('click', () => {
+      const url = `/api/conversation/${convId}/download.docx`;
+      window.location.href = url;
+    });
+
+    loadConversation();
   </script>
 </body>
 
