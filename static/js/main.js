@@ -160,20 +160,15 @@ class VoiceAssistant {
 
   /** Crea el botón flotante de micrófono */
   createMicButton() {
-    // Contenedor del botón
-    const micContainer = document.createElement('div');
-    micContainer.id = 'micButtonContainer';
+    const micContainer = document.createElement("div");
+    micContainer.className = "mic-container";
     micContainer.style.cssText = `
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      z-index: 10000;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-    `;
-
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    margin-left: 200px;
+    margin-bottom: 100px;
+  `;
     // Botón micrófono
     const micBtn = document.createElement('button');
     micBtn.id = 'micButton';
@@ -260,7 +255,12 @@ class VoiceAssistant {
     micContainer.appendChild(micState);
     micContainer.appendChild(noiseContainer);
 
-    document.body.appendChild(micContainer);
+    const chatArea = document.getElementById("chatArea");
+    if (chatArea && chatArea.parentNode) {
+      chatArea.parentNode.insertBefore(micContainer, chatArea.nextSibling);
+    } else {
+      document.body.appendChild(micContainer);
+    }
 
     this.micBtn = micBtn;
     this.micState = micState;
