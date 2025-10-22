@@ -119,189 +119,349 @@
 
   <script>
     const convId = '{{ conversation_id }}';
-    async function loadConversation() {
-      const res = await fetch(`/api/conversation/${convId}`);
-      if (!res.ok) return document.getElementById('conversationArea').innerText = 'Conversación no encontrada';
-      const data = await res.json();
-      const conv = data.conversation;
-      const area = document.getElementById('conversationArea');
-      area.innerHTML = '';
-      conv.responses.forEach(r => {
-        const p = document.createElement('div');
-        p.className = 'message ' + r.role;
-        p.innerHTML = `<strong>${r.role === 'user' ? 'Cliente' : 'Asistente Legal'}</strong>: ${r.content}`;
-        area.appendChild(p);
-      });
+async function loadConversation() {
+  const res = await fetch(`/api/conversation/${convId}`);
+  if (!res.ok) return document.getElementById('conversationArea').innerText = 'Conversación no encontrada';
+  const data = await res.json();
+  const conv = data.conversation;
+  const area = document.getElementById('conversationArea');
+  area.innerHTML = '';
+  conv.responses.forEach(r => {
+    const p = document.createElement('div');
+    p.className = 'message ' + r.role;
+    p.innerHTML = `<strong>${r.role === 'user' ? 'Cliente' : 'Asistente Legal'}</strong>: ${r.content}`;
+    area.appendChild(p);
+  });
 
-      // mostrar análisis si existe
-      const resultArea = document.getElementById('resultArea');
-      if (conv.analysis) {
-        // Renderizar análisis guardado en formato amigable
-        function renderSavedAnalysis(result) {
-          resultArea.innerHTML = '';
-          const wrap = document.createElement('div');
-          wrap.className = 'analysis-friendly';
+  // mostrar análisis si existe
+  const resultArea = document.getElementById('resultArea');
+  if (conv.analysis) {
+    renderSavedAnalysis(conv.analysis);
+    if (conv.analysis_raw) {
+      const rawWrap = document.createElement('div');
+      rawWrap.className = 'analysis-friendly';
+      const rawHdr = document.createElement('h3');
+      rawHdr.innerHTML = 'Texto Crudo del Análisis';
+      rawHdr.style.marginBottom = '10px';
+      rawWrap.appendChild(rawHdr);
+      const rawPre = document.createElement('pre');
+      rawPre.innerText = conv.analysis_raw;
+      rawWrap.appendChild(rawPre);
+      resultArea.appendChild(rawWrap);
+    }
+    try { document.getElementById('downloadTxtBtn').style.display = 'inline-block'; } catch (e) { }
+    try { document.getElementById('downloadDocxBtn').style.display = 'inline-block'; } catch (e) { }
+  }
+}
 
-          const hdr = document.createElement('h2');
-          hdr.innerHTML = '<span style="font-size:1.5em;vertical-align:middle;">⚖️</span> Análisis Legal Guardado';
-          hdr.style.marginBottom = '18px';
-          wrap.appendChild(hdr);
+// Función para renderizar el análisis guardado con recomendación de abogado
+function renderSavedAnalysis(result) {
+  const resultArea = document.getElementById('resultArea');
+  resultArea.innerHTML = '';
+  const wrap = document.createElement('div');
+  wrap.className = 'analysis-friendly';
 
-          // Categoría y subdivisión
-          const catRow = document.createElement('div');
-          catRow.style.display = 'flex';
-          catRow.style.gap = '32px';
-          catRow.style.marginBottom = '12px';
-          catRow.style.flexWrap = 'wrap';
-          catRow.innerHTML = `
-            <div><strong style="color: #D4AF37;">Categoría:</strong> <span style="color:#000000;">${result.category || 'N/D'}</span></div>
-            <div><strong style="color: #D4AF37;">Subdivisión:</strong> <span style="color:#000000;">${result.subdivision || 'N/D'}</span></div>
-          `;
-          wrap.appendChild(catRow);
+  const hdr = document.createElement('h2');
+  hdr.innerHTML = '<span style="font-size:1.5em;vertical-align:middle;">⚖️</span> Análisis Legal Guardado';
+  hdr.style.marginBottom = '18px';
+  wrap.appendChild(hdr);
 
-          // Estimación de costo
-          const cost = document.createElement('div');
-          cost.style.marginBottom = '18px';
-          cost.innerHTML = `<strong>Estimación de costo:</strong>${result.estimated_cost || 'N/D'}</span>`;
-          wrap.appendChild(cost);
+  // Mostrar si necesita abogado
+  if (result.necesita_abogado) {
+    const needsLawyer = document.createElement('div');
+    needsLawyer.style.cssText = `
+      background: ${result.necesita_abogado.toLowerCase() === 'si' ? 'linear-gradient(135deg, #fee2e2, #fca5a5)' : 'linear-gradient(135deg, #d1fae5, #6ee7b7)'};
+      border: 2px solid ${result.necesita_abogado.toLowerCase() === 'si' ? '#dc2626' : '#059669'};
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    `;
+    
+    const icon = result.necesita_abogado.toLowerCase() === 'si' ? '⚠️' : '✅';
+    const text = result.necesita_abogado.toLowerCase() === 'si' 
+      ? '<strong style="color: #991b1b;">SÍ NECESITA UN ABOGADO</strong>' 
+      : '<strong style="color: #047857;">NO NECESITA UN ABOGADO</strong>';
+    
+    needsLawyer.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+        <span style="font-size: 2em;">${icon}</span>
+        <div style="flex: 1;">
+          ${text}
+          ${result.razon_abogado ? `<p style="margin-top: 8px; color: #374151; line-height: 1.5;">${result.razon_abogado}</p>` : ''}
+        </div>
+      </div>
+    `;
+    wrap.appendChild(needsLawyer);
+  }
 
-          // Recomendaciones
-          const rec = document.createElement('div');
-          rec.innerHTML = `<h3> Recomendaciones</h3>`;
-          const recPre = document.createElement('pre');
-          recPre.innerText = result.recommendations || '';
-          rec.appendChild(recPre);
-          wrap.appendChild(rec);
+  // Mostrar recomendación de abogado si necesita uno
+  if (result.necesita_abogado && result.necesita_abogado.toLowerCase() === 'si' && result.abogado_recomendado) {
+    const lawyer = result.abogado_recomendado;
+    const lawyerCard = document.createElement('div');
+    lawyerCard.style.cssText = `
+      background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+      border: 2px solid #0284c7;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.15);
+    `;
+    
+    const stars = '⭐'.repeat(Math.floor(lawyer.calificacion || 0));
+    
+    lawyerCard.innerHTML = `
+      <h3 style="color: #0369a1; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 1.5em;">👨‍⚖️</span>
+        Abogado Recomendado
+      </h3>
+      <div style="background: white; border-radius: 8px; padding: 16px;">
+        <div style="margin-bottom: 12px;">
+          <strong style="font-size: 1.2em; color: #0c4a6e;">${lawyer.nombre || 'N/D'}</strong>
+          <div style="color: #0369a1; margin-top: 4px;">${lawyer.especialidad || 'N/D'}</div>
+          <div style="margin-top: 4px; color: #f59e0b;">${stars} (${lawyer.calificacion || 'N/D'})</div>
+        </div>
+        
+        <div style="background: #f0f9ff; border-radius: 6px; padding: 12px; margin-bottom: 12px;">
+          <p style="color: #374151; line-height: 1.6; margin: 0;">${lawyer.descripcion || 'N/D'}</p>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 1.2em;">📞</span>
+            <div>
+              <div style="font-size: 0.85em; color: #6b7280;">Teléfono</div>
+              <strong style="color: #0c4a6e;">${lawyer.telefono || 'N/D'}</strong>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 1.2em;">📧</span>
+            <div>
+              <div style="font-size: 0.85em; color: #6b7280;">Email</div>
+              <strong style="color: #0c4a6e;">${lawyer.email || 'N/D'}</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    wrap.appendChild(lawyerCard);
+  }
 
-          // Carta formal
-          const letter = document.createElement('div');
-          letter.innerHTML = `<h3> Carta Formal</h3>`;
-          const letterPre = document.createElement('pre');
-          letterPre.innerText = result.letter || '';
-          letter.appendChild(letterPre);
-          wrap.appendChild(letter);
+  // Categoría y subdivisión
+  const catRow = document.createElement('div');
+  catRow.style.display = 'flex';
+  catRow.style.gap = '32px';
+  catRow.style.marginBottom = '12px';
+  catRow.style.flexWrap = 'wrap';
+  catRow.innerHTML = `
+    <div><strong style="color: #D4AF37;">Categoría:</strong> <span style="color:#000000;">${result.category || 'N/D'}</span></div>
+    <div><strong style="color: #D4AF37;">Subdivisión:</strong> <span style="color:#000000;">${result.subdivision || 'N/D'}</span></div>
+  `;
+  wrap.appendChild(catRow);
 
-          resultArea.appendChild(wrap);
-        }
-        renderSavedAnalysis(conv.analysis);
-        if (conv.analysis_raw) {
-          const rawWrap = document.createElement('div');
-          rawWrap.className = 'analysis-friendly';
-          const rawHdr = document.createElement('h3');
-          rawHdr.innerHTML = 'Texto Crudo del Análisis';
-          rawHdr.style.marginBottom = '10px';
-          rawWrap.appendChild(rawHdr);
-          const rawPre = document.createElement('pre');
-          rawPre.innerText = conv.analysis_raw;
-          rawWrap.appendChild(rawPre);
-          resultArea.appendChild(rawWrap);
-        }
-        // mostrar botones de descarga
-        try { document.getElementById('downloadTxtBtn').style.display = 'inline-block'; } catch (e) { }
-        try { document.getElementById('downloadDocxBtn').style.display = 'inline-block'; } catch (e) { }
-      }
+  // Estimación de costo
+  const cost = document.createElement('div');
+  cost.style.marginBottom = '18px';
+  cost.innerHTML = `<strong style="color: #D4AF37;">Estimación de costo:</strong> <span style="color:#000000;">${result.estimated_cost || 'N/D'}</span>`;
+  wrap.appendChild(cost);
+
+  // Recomendaciones
+  const rec = document.createElement('div');
+  rec.innerHTML = `<h3 style="color: #D4AF37;">📋 Recomendaciones</h3>`;
+  const recPre = document.createElement('pre');
+  recPre.innerText = result.recommendations || '';
+  rec.appendChild(recPre);
+  wrap.appendChild(rec);
+
+  // Carta formal
+  const letter = document.createElement('div');
+  letter.innerHTML = `<h3 style="color: #D4AF37;">📄 Carta Formal</h3>`;
+  const letterPre = document.createElement('pre');
+  letterPre.innerText = result.letter || '';
+  letter.appendChild(letterPre);
+  wrap.appendChild(letter);
+
+  resultArea.appendChild(wrap);
+}
+
+document.getElementById('entenderBtn').addEventListener('click', async () => {
+  const btn = document.getElementById('entenderBtn');
+  btn.disabled = true;
+  btn.innerHTML = 'Procesando análisis legal...';
+  const res = await fetch(`/api/conversation/${convId}/entender`, { method: 'POST' });
+  const data = await res.json();
+  const out = document.getElementById('resultArea');
+  
+  function renderFriendly(result) {
+    out.innerHTML = '';
+    const wrap = document.createElement('div');
+    wrap.className = 'analysis-friendly';
+
+    const hdr = document.createElement('h2');
+    hdr.innerHTML = '<span style="font-size:1.5em;vertical-align:middle;">⚖️</span> Análisis Legal Generado';
+    hdr.style.marginBottom = '18px';
+    wrap.appendChild(hdr);
+
+    // Mostrar si necesita abogado
+    if (result.necesita_abogado) {
+      const needsLawyer = document.createElement('div');
+      needsLawyer.style.cssText = `
+        background: ${result.necesita_abogado.toLowerCase() === 'si' ? 'linear-gradient(135deg, #fee2e2, #fca5a5)' : 'linear-gradient(135deg, #d1fae5, #6ee7b7)'};
+        border: 2px solid ${result.necesita_abogado.toLowerCase() === 'si' ? '#dc2626' : '#059669'};
+        border-radius: 10px;
+        padding: 16px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      `;
+      
+      const icon = result.necesita_abogado.toLowerCase() === 'si' ? '⚠️' : '✅';
+      const text = result.necesita_abogado.toLowerCase() === 'si' 
+        ? '<strong style="color: #991b1b;">SÍ NECESITA UN ABOGADO</strong>' 
+        : '<strong style="color: #047857;">NO NECESITA UN ABOGADO</strong>';
+      
+      needsLawyer.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+          <span style="font-size: 2em;">${icon}</span>
+          <div style="flex: 1;">
+            ${text}
+            ${result.razon_abogado ? `<p style="margin-top: 8px; color: #374151; line-height: 1.5;">${result.razon_abogado}</p>` : ''}
+          </div>
+        </div>
+      `;
+      wrap.appendChild(needsLawyer);
     }
 
-    document.getElementById('entenderBtn').addEventListener('click', async () => {
-      const btn = document.getElementById('entenderBtn');
-      btn.disabled = true;
-      btn.innerHTML = 'Procesando análisis legal...';
-      const res = await fetch(`/api/conversation/${convId}/entender`, { method: 'POST' });
-      const data = await res.json();
-      const out = document.getElementById('resultArea');
-      out.innerHTML = '';
-      function renderFriendly(result) {
-        out.innerHTML = '';
-        const wrap = document.createElement('div');
-        wrap.className = 'analysis-friendly';
+    // Mostrar recomendación de abogado si necesita uno
+    if (result.necesita_abogado && result.necesita_abogado.toLowerCase() === 'si' && result.abogado_recomendado) {
+      const lawyer = result.abogado_recomendado;
+      const lawyerCard = document.createElement('div');
+      lawyerCard.style.cssText = `
+        background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+        border: 2px solid #0284c7;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 12px rgba(2, 132, 199, 0.15);
+      `;
+      
+      const stars = '⭐'.repeat(Math.floor(lawyer.calificacion || 0));
+      
+      lawyerCard.innerHTML = `
+        <h3 style="color: #0369a1; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 1.5em;">👨‍⚖️</span>
+          Abogado Recomendado
+        </h3>
+        <div style="background: white; border-radius: 8px; padding: 16px;">
+          <div style="margin-bottom: 12px;">
+            <strong style="font-size: 1.2em; color: #0c4a6e;">${lawyer.nombre || 'N/D'}</strong>
+            <div style="color: #0369a1; margin-top: 4px;">${lawyer.especialidad || 'N/D'}</div>
+            <div style="margin-top: 4px; color: #f59e0b;">${stars} (${lawyer.calificacion || 'N/D'})</div>
+          </div>
+          
+          <div style="background: #f0f9ff; border-radius: 6px; padding: 12px; margin-bottom: 12px;">
+            <p style="color: #374151; line-height: 1.6; margin: 0;">${lawyer.descripcion || 'N/D'}</p>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 1.2em;">📞</span>
+              <div>
+                <div style="font-size: 0.85em; color: #6b7280;">Teléfono</div>
+                <strong style="color: #0c4a6e;">${lawyer.telefono || 'N/D'}</strong>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 1.2em;">📧</span>
+              <div>
+                <div style="font-size: 0.85em; color: #6b7280;">Email</div>
+                <strong style="color: #0c4a6e;">${lawyer.email || 'N/D'}</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      wrap.appendChild(lawyerCard);
+    }
 
-        const hdr = document.createElement('h2');
-        hdr.innerHTML = 'Análisis Legal Generado';
-        hdr.style.marginBottom = '18px';
-        wrap.appendChild(hdr);
+    // Categoría y subdivisión
+    const catRow = document.createElement('div');
+    catRow.style.display = 'flex';
+    catRow.style.gap = '32px';
+    catRow.style.marginBottom = '12px';
+    catRow.style.flexWrap = 'wrap';
+    catRow.innerHTML = `
+      <div><strong style="color: #D4AF37;">Categoría:</strong> <span style="color:#FFFFF0;">${result.category || 'N/D'}</span></div>
+      <div><strong style="color: #D4AF37;">Subdivisión:</strong> <span style="color:#FFFFF0;">${result.subdivision || 'N/D'}</span></div>
+    `;
+    wrap.appendChild(catRow);
 
-        // Categoría y subdivisión
-        const catRow = document.createElement('div');
-        catRow.style.display = 'flex';
-        catRow.style.gap = '32px';
-        catRow.style.marginBottom = '12px';
-        catRow.style.flexWrap = 'wrap';
-        catRow.innerHTML = `
-          <div><strong style="color: #D4AF37;">Categoría:</strong> <span style="color:#FFFFF0;">${result.category || 'N/D'}</span></div>
-          <div><strong style="color: #D4AF37;">Subdivisión:</strong> <span style="color:#FFFFF0;">${result.subdivision || 'N/D'}</span></div>
-        `;
-        wrap.appendChild(catRow);
+    // Estimación de costo
+    const cost = document.createElement('div');
+    cost.style.marginBottom = '18px';
+    cost.innerHTML = `<strong style="color: #D4AF37;">Estimación de costo:</strong> <span style="color:#FFFFF0;">${result.estimated_cost || 'N/D'}</span>`;
+    wrap.appendChild(cost);
 
-        // Estimación de costo
-        const cost = document.createElement('div');
-        cost.style.marginBottom = '18px';
-        cost.innerHTML = `<strong style="color: #D4AF37;">Estimación de costo:</strong> <span style="color:#FFFFF0;">${result.estimated_cost || 'N/D'}</span>`;
-        wrap.appendChild(cost);
+    // Recomendaciones
+    const rec = document.createElement('div');
+    rec.innerHTML = `<h3 style="color: #D4AF37;">📋 Recomendaciones</h3>`;
+    const recPre = document.createElement('pre');
+    recPre.innerText = result.recommendations || '';
+    rec.appendChild(recPre);
+    wrap.appendChild(rec);
 
-        // Recomendaciones
-        const rec = document.createElement('div');
-        rec.innerHTML = `<h3>Recomendaciones</h3>`;
-        const recPre = document.createElement('pre');
-        recPre.innerText = result.recommendations || '';
-        rec.appendChild(recPre);
-        wrap.appendChild(rec);
+    // Carta formal
+    const letter = document.createElement('div');
+    letter.innerHTML = `<h3 style="color: #D4AF37;">📄 Carta Formal</h3>`;
+    const letterPre = document.createElement('pre');
+    letterPre.innerText = result.letter || '';
+    letter.appendChild(letterPre);
+    wrap.appendChild(letter);
 
-        // Carta formal
-        const letter = document.createElement('div');
-        letter.innerHTML = `<h3>Carta Formal</h3>`;
-        const letterPre = document.createElement('pre');
-        letterPre.innerText = result.letter || '';
-        letter.appendChild(letterPre);
-        wrap.appendChild(letter);
+    out.appendChild(wrap);
+  }
 
-        out.appendChild(wrap);
+  if (data.error) {
+    out.innerHTML = `<div class="card" style="padding: 2rem; background: rgba(220, 38, 38, 0.1); border: 1px solid rgba(220, 38, 38, 0.3);"><strong style="color: #DC2626;">Error:</strong> ${data.error || ''}</div>`;
+  } else if (data.result) {
+    renderFriendly(data.result);
+    try { document.getElementById('downloadTxtBtn').style.display = 'inline-block'; } catch (e) { }
+    try { document.getElementById('downloadDocxBtn').style.display = 'inline-block'; } catch (e) { }
+  } else if (data.result_text) {
+    try {
+      const m = data.result_text.match(/(\{[\s\S]*\})/);
+      if (m) {
+        const parsed = JSON.parse(m[1]);
+        renderFriendly(parsed);
+      } else {
+        const pre = document.createElement('pre');
+        pre.className = 'analysis-friendly';
+        pre.innerText = data.result_text;
+        out.appendChild(pre);
       }
+    } catch (e) {
+      const pre = document.createElement('pre');
+      pre.className = 'analysis-friendly';
+      pre.innerText = data.result_text;
+      out.appendChild(pre);
+    }
+  }
+  btn.disabled = false;
+  btn.innerHTML = '<span style="margin-right: 0.5rem;">⚖️</span> Analizar y Redactar Carta Legal';
+});
 
-      if (data.error) {
-        out.innerHTML = `<div class="card" style="padding: 2rem; background: rgba(220, 38, 38, 0.1); border: 1px solid rgba(220, 38, 38, 0.3);"><strong style="color: #DC2626;">Error:</strong> ${data.error || ''}</div>`;
-      } else if (data.result) {
-        // resultado ya en JSON con campos esperados
-        renderFriendly(data.result);
-        try { document.getElementById('downloadTxtBtn').style.display = 'inline-block'; } catch (e) { }
-        try { document.getElementById('downloadDocxBtn').style.display = 'inline-block'; } catch (e) { }
-      } else if (data.result_text) {
-        // intentar parsear JSON dentro del texto
-        try {
-          const m = data.result_text.match(/(\{[\s\S]*\})/);
-          if (m) {
-            const parsed = JSON.parse(m[1]);
-            renderFriendly(parsed);
-          } else {
-            // si no hay JSON, mostrar el texto crudo en cuadro grande
-            const pre = document.createElement('pre');
-            pre.className = 'analysis-friendly';
-            pre.innerText = data.result_text;
-            out.appendChild(pre);
-          }
-        } catch (e) {
-          const pre = document.createElement('pre');
-          pre.className = 'analysis-friendly';
-          pre.innerText = data.result_text;
-          out.appendChild(pre);
-        }
-      }
-      btn.disabled = false;
-      btn.innerHTML = '<span style="margin-right: 0.5rem;">⚖️</span> Analizar y Redactar Carta Legal';
-    });
+// Descargar .txt
+document.getElementById('downloadTxtBtn').addEventListener('click', () => {
+  const url = `/api/conversation/${convId}/download.txt`;
+  window.location.href = url;
+});
 
-    // Descargar .txt
-    document.getElementById('downloadTxtBtn').addEventListener('click', () => {
-      const url = `/api/conversation/${convId}/download.txt`;
-      window.location.href = url;
-    });
+// Descargar .docx
+document.getElementById('downloadDocxBtn').addEventListener('click', () => {
+  const url = `/api/conversation/${convId}/download.docx`;
+  window.location.href = url;
+});
 
-    // Descargar .docx
-    document.getElementById('downloadDocxBtn').addEventListener('click', () => {
-      const url = `/api/conversation/${convId}/download.docx`;
-      window.location.href = url;
-    });
-
-    loadConversation();
+loadConversation();
   </script>
 </body>
 

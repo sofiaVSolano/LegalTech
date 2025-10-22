@@ -53,6 +53,188 @@ QUESTIONS = [
     # Eliminada la pregunta final para soportar modo de voz continuo (el usuario detiene cuando quiera)
 ]
 
+# Base de datos simulada de abogados por especialidad
+ABOGADOS_DATABASE = {
+    "Derecho Constitucional": [
+        {
+            "nombre": "Dr. Carlos Andrés Martínez",
+            "especialidad": "Derecho Constitucional y Derechos Humanos",
+            "telefono": "+57 315 234 5678",
+            "email": "c.martinez@bufetejuridico.com",
+            "calificacion": 4.8,
+            "descripcion": "Especialista en acciones de tutela, habeas corpus y protección de derechos fundamentales. 15 años de experiencia."
+        },
+        {
+            "nombre": "Dra. María Fernanda López",
+            "especialidad": "Derecho Constitucional",
+            "telefono": "+57 320 876 5432",
+            "email": "mf.lopez@abogadosasociados.com",
+            "calificacion": 4.9,
+            "descripcion": "Experta en litigios constitucionales y acciones populares. Magíster en Derecho Constitucional."
+        }
+    ],
+    "Derecho Penal": [
+        {
+            "nombre": "Dr. Roberto Jiménez Rojas",
+            "especialidad": "Derecho Penal y Criminalística",
+            "telefono": "+57 318 345 6789",
+            "email": "r.jimenez@defensapenal.com",
+            "calificacion": 4.7,
+            "descripcion": "Defensor penal con amplia experiencia en delitos contra la vida, patrimonio económico y sistema financiero."
+        },
+        {
+            "nombre": "Dra. Ana Patricia Moreno",
+            "especialidad": "Derecho Penal",
+            "telefono": "+57 312 654 3210",
+            "email": "ap.moreno@penalistas.com",
+            "calificacion": 4.9,
+            "descripcion": "Especialista en derecho penal económico y delitos informáticos. 12 años de experiencia."
+        }
+    ],
+    "Derecho Civil": [
+        {
+            "nombre": "Dr. Luis Eduardo Pérez",
+            "especialidad": "Derecho Civil y Familia",
+            "telefono": "+57 316 789 1234",
+            "email": "le.perez@civilistas.com",
+            "calificacion": 4.6,
+            "descripcion": "Experto en derecho de familia, sucesiones, contratos y responsabilidad civil. 20 años de trayectoria."
+        },
+        {
+            "nombre": "Dra. Sandra Milena Castro",
+            "especialidad": "Derecho Civil y Contractual",
+            "telefono": "+57 314 567 8901",
+            "email": "sm.castro@abogadosciviles.com",
+            "calificacion": 4.8,
+            "descripcion": "Especialista en contratos, obligaciones y derecho inmobiliario."
+        }
+    ],
+    "Derecho Laboral": [
+        {
+            "nombre": "Dr. Jorge Alberto Ramírez",
+            "especialidad": "Derecho Laboral y Seguridad Social",
+            "telefono": "+57 319 234 5678",
+            "email": "ja.ramirez@laboralistas.com",
+            "calificacion": 4.9,
+            "descripcion": "Experto en litigios laborales, despidos injustificados, acoso laboral y pensiones."
+        },
+        {
+            "nombre": "Dra. Patricia Gómez Vargas",
+            "especialidad": "Derecho Laboral",
+            "telefono": "+57 311 876 5432",
+            "email": "p.gomez@derechoslaborales.com",
+            "calificacion": 4.7,
+            "descripcion": "Especialista en derecho colectivo del trabajo y seguridad social."
+        }
+    ],
+    "Derecho Comercial": [
+        {
+            "nombre": "Dr. Mauricio Silva Londoño",
+            "especialidad": "Derecho Comercial y Societario",
+            "telefono": "+57 317 345 6789",
+            "email": "m.silva@comercialistas.com",
+            "calificacion": 4.8,
+            "descripcion": "Experto en constitución de empresas, fusiones, adquisiciones y derecho corporativo."
+        }
+    ],
+    "Derecho Administrativo": [
+        {
+            "nombre": "Dr. Alfonso Gutiérrez Medina",
+            "especialidad": "Derecho Administrativo y Contratación Estatal",
+            "telefono": "+57 315 678 9012",
+            "email": "a.gutierrez@administrativistas.com",
+            "calificacion": 4.7,
+            "descripcion": "Especialista en contratación pública, acciones contra el Estado y derecho disciplinario."
+        }
+    ],
+    "Derecho Ambiental": [
+        {
+            "nombre": "Dra. Carolina Vargas Torres",
+            "especialidad": "Derecho Ambiental",
+            "telefono": "+57 320 456 7890",
+            "email": "c.vargas@ambientalistas.com",
+            "calificacion": 4.6,
+            "descripcion": "Experta en licencias ambientales, recursos naturales y acciones populares ambientales."
+        }
+    ],
+    "Derecho de Familia": [
+        {
+            "nombre": "Dra. Isabel Cristina Rojas",
+            "especialidad": "Derecho de Familia y Menores",
+            "telefono": "+57 318 567 8901",
+            "email": "ic.rojas@familiaylegal.com",
+            "calificacion": 4.9,
+            "descripcion": "Especialista en divorcios, custodia de menores, alimentos y violencia intrafamiliar."
+        }
+    ],
+    "Derecho del Consumidor": [
+        {
+            "nombre": "Dr. Felipe Martínez Duque",
+            "especialidad": "Derecho del Consumidor",
+            "telefono": "+57 314 234 5678",
+            "email": "f.martinez@consumidores.com",
+            "calificacion": 4.5,
+            "descripcion": "Defensor de derechos del consumidor, experto en productos defectuosos y servicios públicos."
+        }
+    ],
+    "Derecho Tributario": [
+        {
+            "nombre": "Dr. Germán Ospina Ruiz",
+            "especialidad": "Derecho Tributario y Aduanero",
+            "telefono": "+57 316 890 1234",
+            "email": "g.ospina@tributaristas.com",
+            "calificacion": 4.8,
+            "descripcion": "Experto en controversias tributarias, DIAN, planeación fiscal y comercio exterior."
+        }
+    ]
+}
+
+def get_lawyer_recommendation(category, subdivision):
+    """
+    Obtiene una recomendación de abogado basada en la categoría y subdivisión del caso.
+    Retorna un diccionario con los datos del abogado recomendado.
+    """
+    # Mapeo de subdivisiones a especialidades
+    specialty_mapping = {
+        # Derecho Público
+        "Derecho Constitucional": "Derecho Constitucional",
+        "Derecho Administrativo": "Derecho Administrativo",
+        "Derecho Penal": "Derecho Penal",
+        "Derecho Tributario": "Derecho Tributario",
+        
+        # Derecho Privado
+        "Derecho Civil": "Derecho Civil",
+        "Derecho Comercial": "Derecho Comercial",
+        "Derecho Laboral": "Derecho Laboral",
+        
+        # Derecho Social
+        "Derecho de Familia": "Derecho de Familia",
+        "Derecho del Consumidor": "Derecho del Consumidor",
+        "Derecho Ambiental": "Derecho Ambiental"
+    }
+    
+    # Buscar la especialidad correspondiente
+    specialty = specialty_mapping.get(subdivision, subdivision)
+    
+    # Obtener lista de abogados para esa especialidad
+    lawyers = ABOGADOS_DATABASE.get(specialty, [])
+    
+    if lawyers:
+        # Ordenar por calificación y retornar el mejor
+        lawyers_sorted = sorted(lawyers, key=lambda x: x['calificacion'], reverse=True)
+        return lawyers_sorted[0]
+    
+    # Si no hay abogado específico, retornar uno genérico
+    return {
+        "nombre": "Dr. Juan Carlos Mendoza",
+        "especialidad": "Derecho General",
+        "telefono": "+57 310 123 4567",
+        "email": "contacto@abogadosgeneral.com",
+        "calificacion": 4.5,
+        "descripcion": "Abogado generalista con experiencia en múltiples áreas del derecho."
+    }
+
+
 @app.route('/')
 def index():
     """Ruta principal que sirve la página de inicio del asistente legal."""
@@ -411,7 +593,6 @@ def api_delete_conversation(conv_id):
         logger.error(f"Error deleting conversation {conv_id}: {str(e)}")
         return jsonify({'error': 'No se pudo eliminar la conversación'}), 500
 
-
 @app.route('/api/conversation/<conv_id>/entender', methods=['POST'])
 def api_conversation_entender(conv_id):
     """Procesa la conversación con OpenAI para redactar la carta formal y clasificar el caso."""
@@ -435,22 +616,30 @@ def api_conversation_entender(conv_id):
 
         system_msg = (
             "Eres un abogado experto y especializado. Lee la conversación proporcionada y: "
-            "1) Redacta una carta formal exponiendo el caso del cliente explicándolo con el tecnisismo adecuado"
-            "2) Expón claramente los pasos recomendados para resolver el problema. "
-            "3) Da una estimación aproximada del costo en pesos colombianos (rango). "
-            "4) Clasifica el asunto en UNA de las siguientes categorías: Derecho Público (con subdivisiones), Derecho Privado (con subdivisiones), o Derecho Social (con subdivisiones). "
-            "Responde únicamente en JSON con las claves: category, subdivision, letter, recommendations, estimated_cost. "
+            "1) Determina si el cliente NECESITA un abogado profesional (responde 'si' o 'no' en el campo 'necesita_abogado'). "
+            "2) Redacta una carta formal exponiendo el caso del cliente explicándolo con el tecnicismo adecuado. "
+            "3) Expón claramente los pasos recomendados para resolver el problema. "
+            "4) Da una estimación aproximada del costo en pesos colombianos (rango). "
+            "5) Clasifica el asunto en UNA de las siguientes categorías: Derecho Público (con subdivisiones), Derecho Privado (con subdivisiones), o Derecho Social (con subdivisiones). "
+            "Las subdivisiones disponibles son: Derecho Constitucional, Derecho Administrativo, Derecho Penal, Derecho Tributario, "
+            "Derecho Civil, Derecho Comercial, Derecho Laboral, Derecho de Familia, Derecho del Consumidor, Derecho Ambiental. "
+            "\n\nCRITERIOS para determinar si necesita abogado:\n"
+            "- SI necesita abogado: casos penales, laborales complejos, demandas, divorcios contenciosos, temas tributarios complejos, "
+            "contratos comerciales importantes, sucesiones con conflictos, acciones de tutela complejas.\n"
+            "- NO necesita abogado: consultas simples, trámites administrativos básicos, orientación general, casos que pueden resolverse "
+            "mediante conciliación directa o procesos sencillos.\n\n"
+            "Responde ÚNICAMENTE en JSON con las claves: necesita_abogado, razon_abogado, category, subdivision, letter, recommendations, estimated_cost. "
             "Usa español formal."
         )
 
-        user_msg = f"Conversación:\n{convo_text}\nPor favor devuelve el JSON requerido." 
+        user_msg = f"Conversación:\n{convo_text}\nPor favor devuelve el JSON requerido."
 
         # Verificar que tenemos la API key configurada
         if not OPENAI_API_KEY:
             logger.error('OPENAI_API_KEY no configurada; no se puede procesar con OpenAI')
             return jsonify({'error': 'OPENAI_API_KEY no está configurada en el servidor. Configure la variable de entorno.'}), 503
 
-        # Intentar llamar al modelo (usar GPT_MODEL si está definido)
+        # Intentar llamar al modelo
         model = os.environ.get('GPT_MODEL', 'gpt-4-1106-preview')
         resp = None
         assistant_text = None
@@ -461,7 +650,7 @@ def api_conversation_entender(conv_id):
                     {'role': 'system', 'content': system_msg},
                     {'role': 'user', 'content': user_msg}
                 ],
-                max_tokens=1200,
+                max_tokens=1500,
                 temperature=0.6
             )
         except Exception as e_first:
@@ -473,34 +662,30 @@ def api_conversation_entender(conv_id):
                         {'role': 'system', 'content': system_msg},
                         {'role': 'user', 'content': user_msg}
                     ],
-                    max_tokens=1200,
+                    max_tokens=1500,
                     temperature=0.3
                 )
             except Exception as e_second:
-                # Log completo y retornar error con detalles para debugging
                 logger.exception(f"Error llamando a OpenAI (intentos a {model} y gpt-4 fallaron)")
                 return jsonify({'error': 'Error llamando a OpenAI', 'details': str(e_second)}), 502
 
-        # Extraer texto de la respuesta de forma robusta
+        # Extraer texto de la respuesta
         try:
-            # Intentar acceder a la estructura esperada
             if hasattr(resp, 'choices') and len(resp.choices) > 0:
-                # Manejar objetos tipo dot-access
                 first = resp.choices[0]
                 if hasattr(first, 'message') and hasattr(first.message, 'content'):
                     assistant_text = first.message.content
                 elif isinstance(first, dict) and 'message' in first and 'content' in first['message']:
                     assistant_text = first['message']['content']
-            # Fallback a str(resp)
             if assistant_text is None:
                 assistant_text = str(resp)
         except Exception:
             logger.exception('No se pudo extraer texto de la respuesta de OpenAI')
             assistant_text = str(resp)
+
         # Intentar parsear JSON resultante
         parsed = None
         try:
-            # Buscar primer bloque JSON en el texto
             import re
             m = re.search(r"(\{[\s\S]*\})", assistant_text)
             if m:
@@ -508,15 +693,22 @@ def api_conversation_entender(conv_id):
         except Exception:
             logger.warning('No se pudo parsear JSON desde la respuesta de OpenAI')
 
-        # Asegurar que la conversación está en memoria para poder persistir el análisis
+        # Asegurar que la conversación está en memoria
         if conv_id not in conversations:
             conversations[conv_id] = conv
 
-        # Guardar el análisis en la conversación y persistir en disco
+        # Guardar el análisis en la conversación
         if parsed:
             conversations[conv_id].setdefault('analysis', {})
             conversations[conv_id]['analysis'].update(parsed)
             conversations[conv_id]['analysis_raw'] = assistant_text
+            
+            # Si necesita abogado, obtener recomendación
+            if parsed.get('necesita_abogado', '').lower() == 'si':
+                category = parsed.get('category', '')
+                subdivision = parsed.get('subdivision', '')
+                lawyer = get_lawyer_recommendation(category, subdivision)
+                conversations[conv_id]['analysis']['abogado_recomendado'] = lawyer
         else:
             conversations[conv_id].setdefault('analysis', {})
             conversations[conv_id]['analysis_raw'] = assistant_text
@@ -524,7 +716,7 @@ def api_conversation_entender(conv_id):
         # Guardar en disco
         save_conversation(conv_id)
 
-        # Retornar el resultado (JSON parsed si está disponible, sino texto)
+        # Retornar el resultado
         if parsed:
             return jsonify({'result': parsed})
         return jsonify({'result_text': assistant_text})
